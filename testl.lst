@@ -1,0 +1,1590 @@
+        processor p16f1933
+        radix dec
+
+        include p16f1933.inc
+
+; The recognition of labels and registers is not always good, therefore
+; be treated cautiously the results.
+
+        CONFIG  FOSC     = INTOSC
+        CONFIG  WDTE     = SWDTEN
+        CONFIG  PWRTE    = ON
+        CONFIG  MCLRE    = ON
+        CONFIG  CP       = ON
+        CONFIG  CPD      = OFF
+        CONFIG  BOREN    = ON
+        CONFIG  CLKOUTEN = OFF
+        CONFIG  IESO     = OFF
+        CONFIG  FCMEN    = OFF
+        CONFIG  WRT      = BOOT
+        CONFIG  VCAPEN   = OFF
+        CONFIG  PLLEN    = ON
+        CONFIG  STVREN   = ON
+        CONFIG  BORV     = HI
+        CONFIG  DEBUG    = OFF
+        CONFIG  LVP      = OFF
+
+;===============================================================================
+; DATA address definitions
+
+Common_RAM      equ     0x0070                              ; size: 16 bytes
+
+;===============================================================================
+; CODE area
+
+        ; code
+
+        org     __CODE_START                                ; address: 0x0000
+
+vector_reset                                                ; address: 0x0000
+
+        movlb   0x00
+        clrf    PCLATH                                      ; reg: 0x00a
+        clrf    INTCON                                      ; reg: 0x00b
+        bra     0x0005
+
+vector_int                                                  ; address: 0x0004
+
+        goto    label_040
+
+label_002                                                   ; address: 0x0005
+
+        movlb   0x01
+        movlw   0x0f
+        movwf   WDTCON                                      ; reg: 0x097
+        movlb   0x00
+        movlb   0x03
+        clrf    ANSELA                                      ; reg: 0x18c
+        clrf    ANSELB                                      ; reg: 0x18d
+        movlb   0x00
+        movlb   0x01
+        movlw   0x00
+        movwf   OSCCON                                      ; reg: 0x099
+        movlb   0x00
+        movlb   0x02
+        movlw   0x40
+        movwf   APFCON                                      ; reg: 0x11d
+        movlb   0x00
+        movlb   0x01
+        movlw   0x08
+        movwf   OPTION_REG                                  ; reg: 0x095
+        movlb   0x00
+        movlb   0x01
+        movlw   0x01
+        movwf   TRISA                                       ; reg: 0x08c
+        bcf     TRISB, TRISB7                               ; reg: 0x08d, bit: 7
+        movlb   0x00
+        movlb   0x02
+        bcf     LATC, LATC5                                 ; reg: 0x10e, bit: 5
+        bsf     LATC, LATC6                                 ; reg: 0x10e, bit: 6
+        movlb   0x00
+        movlb   0x01
+        movlw   0x70
+        movwf   OSCCON                                      ; reg: 0x099
+
+label_003                                                   ; address: 0x0025
+
+        btfss   TMR2, 0x4                                   ; reg: 0x01a
+        bra     0x0025
+
+label_004                                                   ; address: 0x0027
+
+        btfss   TMR2, 0x0                                   ; reg: 0x01a
+        bra     0x0027
+
+label_005                                                   ; address: 0x0029
+
+        btfss   TMR2, 0x6                                   ; reg: 0x01a
+        bra     0x0029
+        movlb   0x00
+        movlb   0x03
+        movlw   0xff
+        movwf   EEADRL                                      ; reg: 0x191
+        clrf    EECON1                                      ; reg: 0x195
+        bsf     EECON1, RD                                  ; reg: 0x195, bit: 0
+        incf    EEDATL, W                                   ; reg: 0x193
+        movlb   0x00
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x003e
+        btfsc   PORTB, RB4                                  ; reg: 0x00d, bit: 4
+        goto    label_039
+        movlb   0x03
+        movlw   0xff
+        movwf   EEADRL                                      ; reg: 0x191
+        clrf    EEADRH                                      ; reg: 0x192
+        movwf   EEDATL                                      ; reg: 0x193
+        call    function_003
+        reset
+
+label_006                                                   ; address: 0x003e
+
+        movlb   0x01
+        movlw   0x0e
+        movwf   WDTCON                                      ; reg: 0x097
+        movlb   0x00
+
+label_007                                                   ; address: 0x0042
+
+        movlb   0x03
+        movlw   0x80
+        movwf   RCSTA                                       ; reg: 0x19d
+        movlw   0x26
+        movwf   TXSTA                                       ; reg: 0x19e
+        movlb   0x01
+        bcf     TRISC, TRISC6                               ; reg: 0x08e, bit: 6
+
+label_008                                                   ; address: 0x0049
+
+        movlb   0x01
+        movlw   0x03
+        movwf   OPTION_REG                                  ; reg: 0x095
+        movlb   0x03
+        bcf     RCSTA, CREN                                 ; reg: 0x19d, bit: 4
+        movlb   0x00
+
+label_009                                                   ; address: 0x004f
+
+        btfsc   PORTC, RC7                                  ; reg: 0x00e, bit: 7
+        bra     0x004f
+
+label_010                                                   ; address: 0x0051
+
+        btfss   PORTC, RC7                                  ; reg: 0x00e, bit: 7
+        bra     0x0051
+        clrf    TMR0                                        ; reg: 0x015
+
+label_011                                                   ; address: 0x0054
+
+        btfsc   PORTC, RC7                                  ; reg: 0x00e, bit: 7
+        bra     0x0054
+
+label_012                                                   ; address: 0x0056
+
+        btfss   PORTC, RC7                                  ; reg: 0x00e, bit: 7
+        bra     0x0056
+        movf    TMR0, W                                     ; reg: 0x015
+        movwf   (Common_RAM + 3)                            ; reg: 0x073
+        bcf     STATUS, C                                   ; reg: 0x003, bit: 0
+        rrf     (Common_RAM + 3), W                         ; reg: 0x073
+        btfss   STATUS, C                                   ; reg: 0x003, bit: 0
+        addlw   0xff
+        movlb   0x03
+        movlw   0x22
+        movwf   SPBRGL                                      ; reg: 0x19b
+        clrf    SPBRGH                                      ; reg: 0x19c
+        bsf     RCSTA, CREN                                 ; reg: 0x19d, bit: 4
+        movf    RCREG, W                                    ; reg: 0x199
+        movf    RCREG, W                                    ; reg: 0x199
+        movlb   0x01
+        movlw   0xff
+        movwf   OPTION_REG                                  ; reg: 0x095
+        movlb   0x03
+        btfsc   RCSTA, OERR                                 ; reg: 0x19d, bit: 1
+        bra     0x0042
+        movlb   0x00
+
+label_013                                                   ; address: 0x006c
+
+        btfss   PIR1, RCIF                                  ; reg: 0x011, bit: 5
+        bra     0x006c
+        movlb   0x03
+        movf    RCREG, W                                    ; reg: 0x199
+        movwf   0x74                                        ; reg: 0x1f4
+        xorlw   0x0f
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0049
+        movlw   0x00
+        movwf   FSR0L                                       ; reg: 0x004
+        movlw   0x20
+        movwf   FSR0H                                       ; reg: 0x005
+        clrf    (Common_RAM + 1)                            ; reg: 0x071
+
+label_014                                                   ; address: 0x0079
+
+        btfsc   0x1d, 0x1                                   ; reg: 0x01d
+        bra     0x0042
+        movlb   0x00
+
+label_015                                                   ; address: 0x007c
+
+        btfss   PIR1, RCIF                                  ; reg: 0x011, bit: 5
+        bra     0x007c
+        movlb   0x03
+        movf    RCREG, W                                    ; reg: 0x199
+        movwf   0x74                                        ; reg: 0x1f4
+        xorlw   0x0f
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0049
+        movf    (Common_RAM + 4), W                         ; reg: 0x074
+        xorlw   0x04
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0099
+        movf    (Common_RAM + 4), W                         ; reg: 0x074
+        xorlw   0x05
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0095
+        movlb   0x03
+        btfsc   RCSTA, OERR                                 ; reg: 0x19d, bit: 1
+        bra     0x0042
+        movlb   0x00
+
+label_016                                                   ; address: 0x0090
+
+        btfss   PIR1, RCIF                                  ; reg: 0x011, bit: 5
+        bra     0x0090
+        movlb   0x03
+        movf    RCREG, W                                    ; reg: 0x199
+        movwf   0x74                                        ; reg: 0x1f4
+
+label_017                                                   ; address: 0x0095
+
+        movf    (Common_RAM + 4), W                         ; reg: 0x074
+        movwi   INDF0++
+        addwf   (Common_RAM + 1), F                         ; reg: 0x071
+        bra     0x0079
+
+label_018                                                   ; address: 0x0099
+
+        movf    (Common_RAM + 1), F                         ; reg: 0x071
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0049
+        movlb   0x02
+        movlw   0x40
+        xorwf   LATA, F                                     ; reg: 0x10c
+        movlw   0x00
+        movwf   FSR1L                                       ; reg: 0x006
+        movlw   0x20
+        movwf   FSR1H                                       ; reg: 0x007
+        moviw   .1[INDF1]
+        movwf   0x72                                        ; reg: 0x172
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        reset
+        movlb   0x03
+        moviw   .2[INDF1]
+        movwf   EEADRL                                      ; reg: 0x191
+        moviw   .3[INDF1]
+        movwf   EEADRH                                      ; reg: 0x192
+        movlb   0x00
+        movf    0x20, F                                     ; reg: 0x020
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x00b3
+        addlw   0xe0
+        btfsc   STATUS, C                                   ; reg: 0x003, bit: 0
+        bra     0x0049
+
+label_019                                                   ; address: 0x00b3
+
+        movlw   0x05
+        movwf   FSR0L                                       ; reg: 0x004
+        movlw   0x20
+        movwf   FSR0H                                       ; reg: 0x005
+        moviw   .0[INDF1]
+        sublw   0x07
+        btfss   STATUS, C                                   ; reg: 0x003, bit: 0
+        bra     0x0049
+        moviw   .0[INDF1]
+        brw
+        bra     0x00c5
+        bra     0x00ce
+        bra     0x00e3
+        bra     0x010c
+        bra     0x0118
+        bra     0x0124
+        bra     0x00fd
+        bra     0x010a
+
+label_020                                                   ; address: 0x00c5
+
+        movlw   0x00
+        movwi   .2[INDF1]
+        movlw   0x01
+        movlb   0x03
+        movf    SPBRGL, W                                   ; reg: 0x19b
+        movlb   0x00
+        movwi   .3[INDF1]
+        movlw   0x04
+        bra     0x012e
+
+label_021                                                   ; address: 0x00ce
+
+        movlb   0x03
+        bsf     EECON1, EEPGD                               ; reg: 0x195, bit: 7
+        bcf     EECON1, CFGS                                ; reg: 0x195, bit: 6
+        bsf     EECON1, RD                                  ; reg: 0x195, bit: 0
+        nop
+        nop
+        movf    EEDATL, W                                   ; reg: 0x193
+        movwi   INDF0++
+        movf    EEDATH, W                                   ; reg: 0x194
+        movwi   INDF0++
+        incf    EEADRL, F                                   ; reg: 0x191
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        incf    EEADRH, F                                   ; reg: 0x192
+        decfsz  0x72, F                                     ; reg: 0x1f2
+        bra     0x00ce
+
+label_022                                                   ; address: 0x00dd
+
+        movlb   0x00
+        bcf     STATUS, C                                   ; reg: 0x003, bit: 0
+        moviw   .1[INDF1]
+        rlf     WREG, F                                     ; reg: 0x009
+        addlw   0x05
+        bra     0x012e
+
+label_023                                                   ; address: 0x00e3
+
+        movlb   0x03
+
+label_024                                                   ; address: 0x00e4
+
+        bsf     TMR0, 0x7                                   ; reg: 0x015
+        bcf     TMR0, 0x6                                   ; reg: 0x015
+        bsf     TMR0, 0x2                                   ; reg: 0x015
+        bsf     TMR0, 0x5                                   ; reg: 0x015
+        moviw   INDF0++
+        movwf   PIR3                                        ; reg: 0x013
+        moviw   INDF0++
+        movwf   0x14                                        ; reg: 0x014
+        call    function_002
+        movf    PIR1, W                                     ; reg: 0x011
+        xorlw   0x07
+        andlw   0x07
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x00f6
+
+label_025                                                   ; address: 0x00f2
+
+        incfsz  PIR1, F                                     ; reg: 0x011
+        bra     0x00e4
+        incf    PIR2, F                                     ; reg: 0x012
+        bra     0x00e4
+
+label_026                                                   ; address: 0x00f6
+
+        bcf     TMR0, 0x5                                   ; reg: 0x015
+        call    function_002
+        decfsz  (Common_RAM + 2), F                         ; reg: 0x072
+        bra     0x00f2
+        bcf     TMR0, 0x2                                   ; reg: 0x015
+        movlb   0x00
+        bra     0x012d
+
+label_027                                                   ; address: 0x00fd
+
+        movlb   0x03
+        bsf     EECON1, CFGS                                ; reg: 0x195, bit: 6
+        bsf     EECON1, RD                                  ; reg: 0x195, bit: 0
+        nop
+        nop
+        movf    EEDATL, W                                   ; reg: 0x193
+        movwi   INDF0++
+        movf    EEDATH, W                                   ; reg: 0x194
+        movwi   INDF0++
+        incf    EEADRL, F                                   ; reg: 0x191
+        decfsz  0x72, F                                     ; reg: 0x1f2
+        bra     0x00fd
+        bra     0x00dd
+
+label_028                                                   ; address: 0x010a
+
+        movlb   0x00
+        bra     0x012d
+
+label_029                                                   ; address: 0x010c
+
+        movlb   0x03
+        movlw   0x94
+        movwf   EECON1                                      ; reg: 0x195
+        call    function_002
+        movlw   0x20
+        addwf   PIR1, F                                     ; reg: 0x011
+        clrf    WREG                                        ; reg: 0x009
+        addwfc  PIR2, F                                     ; reg: 0x012
+        decfsz  (Common_RAM + 2), F                         ; reg: 0x072
+        bra     0x010c
+        movlb   0x00
+        bra     0x012d
+
+label_030                                                   ; address: 0x0118
+
+        movlb   0x03
+        clrf    EECON1                                      ; reg: 0x195
+        bsf     EECON1, RD                                  ; reg: 0x195, bit: 0
+        movf    EEDATL, W                                   ; reg: 0x193
+        movwi   INDF0++
+        incf    EEADRL, F                                   ; reg: 0x191
+        decfsz  0x72, F                                     ; reg: 0x1f2
+        bra     0x0118
+        movlb   0x00
+        movf    INDF1, W                                    ; reg: 0x001
+        addlw   0x05
+        bra     0x012e
+
+label_031                                                   ; address: 0x0124
+
+        movlb   0x03
+        moviw   INDF0++
+        movwf   EEDATL                                      ; reg: 0x193
+        call    function_003
+        incf    PIR1, F                                     ; reg: 0x011
+        decfsz  (Common_RAM + 2), F                         ; reg: 0x072
+        bra     0x0124
+        movlb   0x00
+        bra     0x012d
+
+label_032                                                   ; address: 0x012d
+
+        movlw   0x01
+
+label_033                                                   ; address: 0x012e
+
+        movwf   (Common_RAM + 2)                            ; reg: 0x072
+        movlw   0x0f
+        call    function_001
+        call    function_001
+        clrf    (Common_RAM + 1)                            ; reg: 0x071
+        movlw   0x00
+        movwf   FSR0L                                       ; reg: 0x004
+        movlw   0x20
+        movwf   FSR0H                                       ; reg: 0x005
+
+label_034                                                   ; address: 0x0137
+
+        moviw   INDF0++
+        addwf   (Common_RAM + 1), F                         ; reg: 0x071
+        call    function_000
+        decfsz  (Common_RAM + 2), F                         ; reg: 0x072
+        bra     0x0137
+        comf    (Common_RAM + 1), W                         ; reg: 0x071
+        addlw   0x01
+        call    function_000
+        movlw   0x04
+        call    function_001
+        goto    label_008
+
+function_000                                                ; address: 0x0142
+
+        movwf   (Common_RAM + 5)                            ; reg: 0x075
+        xorlw   0x0f
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x014e
+        movf    (Common_RAM + 5), W                         ; reg: 0x075
+        xorlw   0x04
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x014e
+        movf    (Common_RAM + 5), W                         ; reg: 0x075
+        xorlw   0x05
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        goto    label_036
+
+label_035                                                   ; address: 0x014e
+
+        movlw   0x05
+        call    function_001
+
+label_036                                                   ; address: 0x0150
+
+        movf    (Common_RAM + 5), W                         ; reg: 0x075
+
+function_001                                                ; address: 0x0151
+
+        movlb   0x03
+
+label_037                                                   ; address: 0x0152
+
+        btfss   CPSCON0, CPSOUT                             ; reg: 0x01e, bit: 1
+        bra     0x0152
+        movwf   TMR2                                        ; reg: 0x01a
+        movlb   0x00
+        return
+
+function_002                                                ; address: 0x0157
+
+        movlw   0x55
+        movwf   TMR1L                                       ; reg: 0x016
+        movlw   0xaa
+        movwf   TMR1L                                       ; reg: 0x016
+        bsf     TMR0, 0x1                                   ; reg: 0x015
+        nop
+        nop
+        return
+
+function_003                                                ; address: 0x015f
+
+        movlw   0x04
+        movwf   TMR0                                        ; reg: 0x015
+        call    function_002
+
+label_038                                                   ; address: 0x0162
+
+        btfsc   TMR0, 0x1                                   ; reg: 0x015
+        bra     0x0162
+        return
+
+        ; code
+
+        org     0x0200
+
+label_039                                                   ; address: 0x0200
+
+        goto    label_060
+
+        ; code
+
+        org     0x0204
+
+label_040                                                   ; address: 0x0204
+
+        movlb   0x00
+        btfss   INTCON, INTF                                ; reg: 0x00b, bit: 1
+        bra     0x0218
+        bcf     INTCON, INTF                                ; reg: 0x00b, bit: 1
+
+label_041                                                   ; address: 0x0208
+
+        bsf     0x60, 0x6                                   ; reg: 0x060
+        movf    0x69, F                                     ; reg: 0x069
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0298
+        btfsc   0x60, 0x5                                   ; reg: 0x060
+        bra     0x0298
+        bsf     0x60, 0x5                                   ; reg: 0x060
+        movlw   0x05
+        movwf   0x69                                        ; reg: 0x069
+        btfss   0x5c, 0x7                                   ; reg: 0x05c
+        bra     0x0217
+        bcf     0x5c, 0x7                                   ; reg: 0x05c
+        movf    0x5c, W                                     ; reg: 0x05c
+        movwf   0x5d                                        ; reg: 0x05d
+        call    function_013
+
+label_042                                                   ; address: 0x0217
+
+        bra     0x0237
+
+label_043                                                   ; address: 0x0218
+
+        btfss   PIR2, C2IF                                  ; reg: 0x012, bit: 6
+        bra     0x0228
+        bcf     PIR2, C2IF                                  ; reg: 0x012, bit: 6
+        movlb   0x02
+        btfss   CM2CON0, C2OUT                              ; reg: 0x113, bit: 6
+        bra     0x0223
+        movlb   0x01
+        btfss   OPTION_REG, INTEDG                          ; reg: 0x095, bit: 6
+        bra     0x022d
+        movlb   0x00
+        bra     0x0208
+
+label_044                                                   ; address: 0x0223
+
+        movlb   0x01
+        btfsc   OPTION_REG, INTEDG                          ; reg: 0x095, bit: 6
+        bra     0x022d
+        movlb   0x00
+        bra     0x0208
+
+label_045                                                   ; address: 0x0228
+
+        btfss   INTCON, IOCIF                               ; reg: 0x00b, bit: 0
+        bra     0x0231
+        bcf     INTCON, IOCIF                               ; reg: 0x00b, bit: 0
+        movlb   0x07
+        bcf     IOCBF, IOCBF0                               ; reg: 0x396, bit: 0
+
+label_046                                                   ; address: 0x022d
+
+        movlb   0x00
+        movlw   0x05
+        movwf   0x69                                        ; reg: 0x069
+        bra     0x0298
+
+label_047                                                   ; address: 0x0231
+
+        btfss   INTCON, T0IF                                ; reg: 0x00b, bit: 2
+        bra     0x0244
+        bcf     INTCON, T0IF                                ; reg: 0x00b, bit: 2
+        btfss   INTCON, T0IE                                ; reg: 0x00b, bit: 5
+        bra     0x0244
+        bra     0x0298
+
+label_048                                                   ; address: 0x0237
+
+        bcf     INTCON, T0IE                                ; reg: 0x00b, bit: 5
+        call    function_004
+        clrf    0x5b                                        ; reg: 0x05b
+        movlw   0x03
+        btfss   (Common_RAM + 10), 0x3                      ; reg: 0x07a
+        movwf   0x5b                                        ; reg: 0x05b
+        call    function_005
+        movf    (Common_RAM + 11), W                        ; reg: 0x07b
+        movwf   0x58                                        ; reg: 0x058
+        incf    0x59, F                                     ; reg: 0x059
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        incf    0x5a, F                                     ; reg: 0x05a
+        bra     0x0298
+
+label_049                                                   ; address: 0x0244
+
+        btfss   PIR1, TMR1IF                                ; reg: 0x011, bit: 0
+        bra     0x0286
+        movf    0x5b, W                                     ; reg: 0x05b
+        andlw   0x03
+        brw
+        bra     0x0267
+        bra     0x025e
+        bra     0x0255
+        movlb   0x05
+        movf    0x71, W                                     ; reg: 0x2f1
+        movwf   CCPR1H                                      ; reg: 0x292
+        movf    0x70, W                                     ; reg: 0x2f0
+        movwf   CCPR1L                                      ; reg: 0x291
+        movlw   0x09
+        btfss   0x7a, 0x0                                   ; reg: 0x2fa
+        movwf   CCP1CON                                     ; reg: 0x293
+        bra     0x027e
+
+label_050                                                   ; address: 0x0255
+
+        movlb   0x05
+        movf    0x73, W                                     ; reg: 0x2f3
+        movwf   CCPR2H                                      ; reg: 0x299
+        movf    0x72, W                                     ; reg: 0x2f2
+        movwf   CCPR2L                                      ; reg: 0x298
+        movlw   0x09
+        btfss   0x7a, 0x1                                   ; reg: 0x2fa
+        movwf   CCP2CON                                     ; reg: 0x29a
+        bra     0x027e
+
+label_051                                                   ; address: 0x025e
+
+        movlb   0x06
+        movf    0x75, W                                     ; reg: 0x375
+        movwf   CCPR3H                                      ; reg: 0x312
+        movf    0x74, W                                     ; reg: 0x374
+        movwf   CCPR3L                                      ; reg: 0x311
+        movlw   0x09
+        btfss   0x7a, 0x2                                   ; reg: 0x37a
+        movwf   CCP3CON                                     ; reg: 0x313
+        bra     0x027e
+
+label_052                                                   ; address: 0x0267
+
+        movlb   0x06
+        movf    0x75, W                                     ; reg: 0x375
+        movwf   CCPR3H                                      ; reg: 0x312
+        movf    0x74, W                                     ; reg: 0x374
+        movwf   CCPR3L                                      ; reg: 0x311
+        movlw   0x09
+        btfss   0x7a, 0x2                                   ; reg: 0x37a
+        movwf   CCP3CON                                     ; reg: 0x313
+        movlb   0x05
+        movf    0x73, W                                     ; reg: 0x2f3
+        movwf   CCPR2H                                      ; reg: 0x299
+        movf    0x72, W                                     ; reg: 0x2f2
+        movwf   CCPR2L                                      ; reg: 0x298
+        movlw   0x09
+        btfss   0x7a, 0x1                                   ; reg: 0x2fa
+        movwf   CCP2CON                                     ; reg: 0x29a
+        movf    0x71, W                                     ; reg: 0x2f1
+        movwf   CCPR1H                                      ; reg: 0x292
+        movf    0x70, W                                     ; reg: 0x2f0
+        movwf   CCPR1L                                      ; reg: 0x291
+        movlw   0x09
+        btfss   0x7a, 0x0                                   ; reg: 0x2fa
+        movwf   CCP1CON                                     ; reg: 0x293
+
+label_053                                                   ; address: 0x027e
+
+        movlb   0x00
+        movlw   0x08
+        movlb   0x02
+        btfss   0x7a, 0x5                                   ; reg: 0x17a
+        xorwf   LATB, F                                     ; reg: 0x10d
+        movlb   0x00
+        bcf     PIR1, TMR1IF                                ; reg: 0x011, bit: 0
+        bra     0x0298
+
+label_054                                                   ; address: 0x0286
+
+        btfss   PIR3, CCP4IF                                ; reg: 0x013, bit: 5
+        bra     0x0298
+        bcf     PIR3, CCP4IF                                ; reg: 0x013, bit: 5
+        movlb   0x06
+        clrf    CCP4CON                                     ; reg: 0x31a
+        movlb   0x00
+        bcf     T1CON, TMR1ON                               ; reg: 0x018, bit: 0
+        movlw   0x08
+        movlb   0x02
+        btfsc   0x7a, 0x5                                   ; reg: 0x17a
+        xorwf   LATB, F                                     ; reg: 0x10d
+        movlb   0x00
+        movf    0x5b, F                                     ; reg: 0x05b
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0297
+        decfsz  0x5b, F                                     ; reg: 0x05b
+        bra     0x0298
+
+label_055                                                   ; address: 0x0297
+
+        bcf     0x60, 0x5                                   ; reg: 0x060
+
+label_056                                                   ; address: 0x0298
+
+        retfie
+
+function_004                                                ; address: 0x0299
+
+        bcf     T1CON, TMR1ON                               ; reg: 0x018, bit: 0
+        movf    (Common_RAM + 13), W                        ; reg: 0x07d
+        movwf   TMR1L                                       ; reg: 0x016
+        movf    (Common_RAM + 14), W                        ; reg: 0x07e
+        movwf   TMR1H                                       ; reg: 0x017
+        bsf     T1CON, TMR1ON                               ; reg: 0x018, bit: 0
+        movlb   0x01
+        bsf     PIE1, TMR1IE                                ; reg: 0x091, bit: 0
+        movlb   0x00
+        bcf     PIR1, TMR1IF                                ; reg: 0x011, bit: 0
+        movlb   0x02
+        btfsc   0x7a, 0x4                                   ; reg: 0x17a
+        bsf     LATB, LATB3                                 ; reg: 0x10d, bit: 3
+        btfss   0x7a, 0x4                                   ; reg: 0x17a
+        bcf     LATB, LATB3                                 ; reg: 0x10d, bit: 3
+        movlb   0x00
+        return
+
+function_005                                                ; address: 0x02aa
+
+        bcf     0x60, 0x7                                   ; reg: 0x060
+        movlb   0x05
+        movlw   0x08
+        clrf    CCPR1L                                      ; reg: 0x291
+        clrf    CCPR1H                                      ; reg: 0x292
+        movwf   CCP1CON                                     ; reg: 0x293
+        btfsc   0x7a, 0x0                                   ; reg: 0x2fa
+        clrf    CCP1CON                                     ; reg: 0x293
+        clrf    CCPR2L                                      ; reg: 0x298
+        clrf    CCPR2H                                      ; reg: 0x299
+        movwf   CCP2CON                                     ; reg: 0x29a
+        btfsc   0x7a, 0x1                                   ; reg: 0x2fa
+        clrf    CCP2CON                                     ; reg: 0x29a
+        movlb   0x06
+        clrf    CCPR3L                                      ; reg: 0x311
+        clrf    CCPR3H                                      ; reg: 0x312
+        movwf   CCP3CON                                     ; reg: 0x313
+        btfsc   0x7a, 0x2                                   ; reg: 0x37a
+        clrf    CCP3CON                                     ; reg: 0x313
+        movlb   0x00
+        movf    0x5b, W                                     ; reg: 0x05b
+        movlb   0x05
+        andlw   0x03
+        brw
+        bra     0x02cf
+        bra     0x02cd
+        bra     0x02c9
+        clrf    TMR2                                        ; reg: 0x01a
+        movlb   0x06
+        clrf    CCP3CON                                     ; reg: 0x313
+        bra     0x02cf
+
+label_057                                                   ; address: 0x02c9
+
+        clrf    PIR3                                        ; reg: 0x013
+        movlb   0x06
+        clrf    CCP3CON                                     ; reg: 0x313
+        bra     0x02cf
+
+label_058                                                   ; address: 0x02cd
+
+        clrf    PIR3                                        ; reg: 0x013
+        clrf    TMR2                                        ; reg: 0x01a
+
+label_059                                                   ; address: 0x02cf
+
+        movlb   0x06
+        clrf    CCP4CON                                     ; reg: 0x31a
+        movf    0x79, W                                     ; reg: 0x379
+        movwf   CCPR4H                                      ; reg: 0x319
+        movf    0x78, W                                     ; reg: 0x378
+        movwf   CCPR4L                                      ; reg: 0x318
+        movlw   0x0a
+        movwf   CCP4CON                                     ; reg: 0x31a
+        movlb   0x01
+        bsf     PIE3, CCP4IE                                ; reg: 0x093, bit: 5
+        movlb   0x00
+        return
+
+        ; code
+
+        org     0x0300
+
+label_060                                                   ; address: 0x0300
+
+        movlb   0x02
+        movlw   0x44
+        movwf   APFCON                                      ; reg: 0x11d
+        movlb   0x00
+        movlb   0x01
+        movlw   0x03
+        movwf   OPTION_REG                                  ; reg: 0x095
+        movlb   0x00
+        movlb   0x03
+        clrf    ANSELA                                      ; reg: 0x18c
+        bsf     ANSELA, ANSA3                               ; reg: 0x18c, bit: 3
+        movlb   0x00
+        movlb   0x01
+        movlw   0xaa
+        movwf   TRISA                                       ; reg: 0x08c
+        movlw   0x51
+        movwf   TRISB                                       ; reg: 0x08d
+        movlw   0xc0
+        movwf   TRISC                                       ; reg: 0x08e
+        movlw   0xff
+        movwf   TRISE                                       ; reg: 0x090
+        movlb   0x00
+        movlb   0x02
+        movlw   0xef
+        movwf   LATA                                        ; reg: 0x10c
+        movlw   0x51
+        movwf   LATB                                        ; reg: 0x10d
+        movlw   0xc0
+        movwf   LATC                                        ; reg: 0x10e
+        movlw   0xff
+        movwf   LATE                                        ; reg: 0x110
+        movlb   0x00
+        movlb   0x04
+        movlw   0x11
+        movwf   WPUB                                        ; reg: 0x20d
+        movlb   0x00
+        movlb   0x07
+        clrf    IOCBP                                       ; reg: 0x394
+        clrf    IOCBN                                       ; reg: 0x395
+        bsf     IOCBN, IOCBN0                               ; reg: 0x395, bit: 0
+        clrf    IOCBF                                       ; reg: 0x396
+        movlb   0x00
+        movlw   0x20
+        movwf   FSR0L                                       ; reg: 0x004
+        clrf    FSR0H                                       ; reg: 0x005
+        clrf    WREG                                        ; reg: 0x009
+
+label_061                                                   ; address: 0x032e
+
+        movwi   INDF0++
+        btfss   FSR0L, 0x7                                  ; reg: 0x004
+        bra     0x032e
+        movlw   0x79
+        movwf   0x6e                                        ; reg: 0x06e
+        movlw   0x00
+        movwf   0x6f                                        ; reg: 0x06f
+        movlw   0x04
+        movwf   T1CON                                       ; reg: 0x018
+        movlw   0x08
+        movlb   0x05
+        movwf   CCP1CON                                     ; reg: 0x293
+        movwf   CCP2CON                                     ; reg: 0x29a
+        movlb   0x06
+        movwf   CCP3CON                                     ; reg: 0x313
+        movlb   0x08
+        movlw   0x7c
+        movwf   PR6                                         ; reg: 0x41d
+        movlb   0x06
+        movlw   0x3c
+        movwf   CCP5CON                                     ; reg: 0x31e
+        movlw   0x3e
+        movwf   CCPR5L                                      ; reg: 0x31c
+        movlb   0x05
+        movlw   0x02
+        movwf   CCPTMRS1                                    ; reg: 0x29f
+        movlb   0x08
+        movlw   0x07
+        movwf   T6CON                                       ; reg: 0x41e
+        movlb   0x00
+        movlw   0xff
+        movwf   0x5d                                        ; reg: 0x05d
+        movwf   0x5c                                        ; reg: 0x05c
+        movlb   0x03
+        movlw   0x80
+        movwf   RCSTA                                       ; reg: 0x19d
+        clrf    SPBRGH                                      ; reg: 0x19c
+        movlw   0x44
+        movwf   SPBRGL                                      ; reg: 0x19b
+        movlw   0x27
+        movwf   TXSTA                                       ; reg: 0x19e
+        movlw   0x48
+        movwf   BAUDCON                                     ; reg: 0x19f
+        bsf     RCSTA, CREN                                 ; reg: 0x19d, bit: 4
+        movf    RCREG, W                                    ; reg: 0x199
+        movf    RCREG, W                                    ; reg: 0x199
+        movlb   0x00
+        bcf     PIR1, RCIF                                  ; reg: 0x011, bit: 5
+        movlb   0x02
+        movlw   0xb6
+        movwf   CM2CON0                                     ; reg: 0x113
+        movlw   0xd1
+        movwf   CM2CON1                                     ; reg: 0x114
+        movlb   0x00
+        movlb   0x02
+        movlw   0xa8
+        movwf   DACCON0                                     ; reg: 0x118
+        movlw   0x17
+        movwf   DACCON1                                     ; reg: 0x119
+        movlb   0x00
+        movwf   0x6c                                        ; reg: 0x06c
+        movlb   0x02
+        movlw   0x8f
+        movwf   FVRCON                                      ; reg: 0x117
+        movlb   0x00
+        movlb   0x01
+        movlw   0x63
+        movwf   ADCON1                                      ; reg: 0x09e
+        movlb   0x00
+        movlb   0x08
+        movlw   0x7d
+        movwf   PR4                                         ; reg: 0x416
+        movlw   0x06
+        movwf   T4CON                                       ; reg: 0x417
+        clrf    TMR4                                        ; reg: 0x415
+        movlb   0x01
+        bcf     PIE3, TMR4IE                                ; reg: 0x093, bit: 1
+        movlb   0x00
+        movlw   0xa0
+        movwf   Common_RAM                                  ; reg: 0x070
+        movwf   (Common_RAM + 2)                            ; reg: 0x072
+        movwf   (Common_RAM + 4)                            ; reg: 0x074
+        movlw   0xa0
+        movwf   (Common_RAM + 8)                            ; reg: 0x078
+        movlw   0x00
+        movwf   (Common_RAM + 1)                            ; reg: 0x071
+        movwf   (Common_RAM + 3)                            ; reg: 0x073
+        movwf   (Common_RAM + 5)                            ; reg: 0x075
+        movlw   0x00
+        movwf   (Common_RAM + 9)                            ; reg: 0x079
+        movlw   0x28
+        movwf   (Common_RAM + 6)                            ; reg: 0x076
+        clrf    (Common_RAM + 7)                            ; reg: 0x077
+        movlw   0x60
+        movwf   (Common_RAM + 10)                           ; reg: 0x07a
+        movlw   0x64
+        movwf   (Common_RAM + 11)                           ; reg: 0x07b
+        movwf   0x58                                        ; reg: 0x058
+        movlw   0xff
+        movwf   (Common_RAM + 14)                           ; reg: 0x07e
+        movlw   0xaf
+        movwf   (Common_RAM + 13)                           ; reg: 0x07d
+        movlb   0x01
+        bsf     PIE2, C2IE                                  ; reg: 0x092, bit: 6
+        movlb   0x00
+        movlw   0xd8
+        movwf   INTCON                                      ; reg: 0x00b
+        goto    label_062
+
+        ; code
+
+        org     0x0400
+
+label_062                                                   ; address: 0x0400
+
+        clrwdt
+        movlb   0x01
+        btfsc   0x7a, 0x7                                   ; reg: 0x0fa
+        bsf     TRISC, TRISC3                               ; reg: 0x08e, bit: 3
+        btfss   0x7a, 0x7                                   ; reg: 0x0fa
+        bcf     TRISC, TRISC3                               ; reg: 0x08e, bit: 3
+        movlb   0x00
+        btfss   (Common_RAM + 12), 0x7                      ; reg: 0x07c
+        bra     0x040c
+        bcf     (Common_RAM + 12), 0x7                      ; reg: 0x07c
+        clrf    0x59                                        ; reg: 0x059
+        clrf    0x5a                                        ; reg: 0x05a
+
+label_063                                                   ; address: 0x040c
+
+        btfss   PIR1, RCIF                                  ; reg: 0x011, bit: 5
+        bra     0x041f
+        bcf     PIR1, RCIF                                  ; reg: 0x011, bit: 5
+        movlb   0x03
+        btfsc   RCSTA, FERR                                 ; reg: 0x19d, bit: 2
+        bra     0x0419
+        btfsc   0x1d, 0x1                                   ; reg: 0x01d
+        bra     0x041c
+        movf    T1GCON, W                                   ; reg: 0x019
+        movlb   0x00
+        movwf   0x61                                        ; reg: 0x061
+        call    function_011
+        bra     0x041f
+
+label_064                                                   ; address: 0x0419
+
+        movf    T1GCON, W                                   ; reg: 0x019
+        movlb   0x00
+        bra     0x041f
+
+label_065                                                   ; address: 0x041c
+
+        bcf     0x1d, 0x4                                   ; reg: 0x01d
+        bsf     0x1d, 0x4                                   ; reg: 0x01d
+        movlb   0x00
+
+label_066                                                   ; address: 0x041f
+
+        btfss   PIR3, TMR4IF                                ; reg: 0x013, bit: 1
+        bra     0x0484
+        bcf     PIR3, TMR4IF                                ; reg: 0x013, bit: 1
+        call    function_006
+        decfsz  0x56, F                                     ; reg: 0x056
+        bra     0x0484
+        movlw   0x04
+        movwf   0x56                                        ; reg: 0x056
+        bsf     0x55, 0x0                                   ; reg: 0x055
+        movf    0x5d, F                                     ; reg: 0x05d
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x042e
+        decfsz  0x5d, F                                     ; reg: 0x05d
+        bra     0x042e
+        call    function_012
+
+label_067                                                   ; address: 0x042e
+
+        movf    0x69, F                                     ; reg: 0x069
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        decf    0x69, F                                     ; reg: 0x069
+        decfsz  0x50, F                                     ; reg: 0x050
+        bra     0x044a
+        movlw   0x0a
+        movwf   0x50                                        ; reg: 0x050
+        bsf     0x55, 0x1                                   ; reg: 0x055
+        decfsz  0x51, F                                     ; reg: 0x051
+        bra     0x043b
+        movlw   0x05
+        movwf   0x51                                        ; reg: 0x051
+        bsf     0x55, 0x2                                   ; reg: 0x055
+
+label_068                                                   ; address: 0x043b
+
+        decfsz  0x52, F                                     ; reg: 0x052
+        bra     0x044a
+        movlw   0x0a
+        movwf   0x52                                        ; reg: 0x052
+        bsf     0x55, 0x3                                   ; reg: 0x055
+        decfsz  0x53, F                                     ; reg: 0x053
+        bra     0x044a
+        movlw   0x0a
+        movwf   0x53                                        ; reg: 0x053
+        bsf     0x55, 0x4                                   ; reg: 0x055
+        decfsz  0x54, F                                     ; reg: 0x054
+        bra     0x044a
+        movlw   0x0a
+        movwf   0x54                                        ; reg: 0x054
+        bsf     0x55, 0x5                                   ; reg: 0x055
+
+label_069                                                   ; address: 0x044a
+
+        btfss   0x55, 0x0                                   ; reg: 0x055
+        bra     0x0460
+        movf    0x58, F                                     ; reg: 0x058
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x045f
+        decfsz  0x58, F                                     ; reg: 0x058
+        bra     0x045f
+        movf    0x5b, F                                     ; reg: 0x05b
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x045a
+        btfss   (Common_RAM + 10), 0x6                      ; reg: 0x07a
+        bra     0x045f
+        clrf    0x5b                                        ; reg: 0x05b
+        movlw   0x03
+        btfss   (Common_RAM + 10), 0x3                      ; reg: 0x07a
+        movwf   0x5b                                        ; reg: 0x05b
+
+label_070                                                   ; address: 0x045a
+
+        movf    (Common_RAM + 11), W                        ; reg: 0x07b
+        movwf   0x58                                        ; reg: 0x058
+        call    function_004
+        call    function_005
+        bra     0x045f
+
+label_071                                                   ; address: 0x045f
+
+        bcf     0x55, 0x0                                   ; reg: 0x055
+
+label_072                                                   ; address: 0x0460
+
+        btfss   0x55, 0x1                                   ; reg: 0x055
+        bra     0x0463
+        bcf     0x55, 0x1                                   ; reg: 0x055
+
+label_073                                                   ; address: 0x0463
+
+        btfss   0x55, 0x2                                   ; reg: 0x055
+        bra     0x0466
+        bcf     0x55, 0x2                                   ; reg: 0x055
+
+label_074                                                   ; address: 0x0466
+
+        btfss   0x55, 0x3                                   ; reg: 0x055
+        bra     0x046c
+        btfsc   PORTB, RB4                                  ; reg: 0x00d, bit: 4
+        bsf     (Common_RAM + 10), 0x3                      ; reg: 0x07a
+        call    function_012
+        bcf     0x55, 0x3                                   ; reg: 0x055
+
+label_075                                                   ; address: 0x046c
+
+        btfss   0x55, 0x4                                   ; reg: 0x055
+        bra     0x0481
+        decf    0x6c, F                                     ; reg: 0x06c
+        movlw   0x06
+        subwf   0x6c, W                                     ; reg: 0x06c
+        btfss   STATUS, C                                   ; reg: 0x003, bit: 0
+        incf    0x6c, F                                     ; reg: 0x06c
+        btfss   (Common_RAM + 10), 0x6                      ; reg: 0x07a
+        bra     0x0480
+        movf    0x58, F                                     ; reg: 0x058
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0480
+        clrf    0x5b                                        ; reg: 0x05b
+        movlw   0x03
+        btfss   (Common_RAM + 10), 0x3                      ; reg: 0x07a
+        movwf   0x5b                                        ; reg: 0x05b
+        movf    (Common_RAM + 11), W                        ; reg: 0x07b
+        movwf   0x58                                        ; reg: 0x058
+        call    function_004
+        call    function_005
+
+label_076                                                   ; address: 0x0480
+
+        bcf     0x55, 0x4                                   ; reg: 0x055
+
+label_077                                                   ; address: 0x0481
+
+        btfss   0x55, 0x5                                   ; reg: 0x055
+        bra     0x0484
+        bcf     0x55, 0x5                                   ; reg: 0x055
+
+label_078                                                   ; address: 0x0484
+
+        btfsc   T1CON, TMR1ON                               ; reg: 0x018, bit: 0
+        bra     0x0488
+        call    function_008
+        call    function_010
+
+label_079                                                   ; address: 0x0488
+
+        goto    label_062
+
+function_006                                                ; address: 0x0489
+
+        movlw   0x04
+        movwf   PCLATH                                      ; reg: 0x00a
+        movf    0x6b, W                                     ; reg: 0x06b
+        addwf   PCL, F                                      ; reg: 0x002
+        goto    label_080
+        goto    label_081
+        goto    label_082
+
+label_080                                                   ; address: 0x0490
+
+        movlb   0x01
+        movlw   0x0d
+        movwf   ADCON0                                      ; reg: 0x09d
+        movlb   0x00
+        incf    0x6b, F                                     ; reg: 0x06b
+        return
+
+label_081                                                   ; address: 0x0496
+
+        movlb   0x01
+        bsf     ADCON0, GO                                  ; reg: 0x09d, bit: 1
+        movlb   0x00
+        incf    0x6b, F                                     ; reg: 0x06b
+        return
+
+label_082                                                   ; address: 0x049b
+
+        call    function_007
+        rrf     0x6a, W                                     ; reg: 0x06a
+        rrf     WREG, W                                     ; reg: 0x009
+        rrf     WREG, W                                     ; reg: 0x009
+        andlw   0x1f
+        movwf   0x6d                                        ; reg: 0x06d
+        subwf   0x6c, W                                     ; reg: 0x06c
+        btfsc   STATUS, C                                   ; reg: 0x003, bit: 0
+        goto    label_083
+        movf    0x6d, W                                     ; reg: 0x06d
+        movwf   0x6c                                        ; reg: 0x06c
+        decf    0x6c, W                                     ; reg: 0x06c
+        movlb   0x02
+        movwf   DACCON1                                     ; reg: 0x119
+        movlb   0x00
+
+label_083                                                   ; address: 0x04aa
+
+        clrf    0x6b                                        ; reg: 0x06b
+        return
+
+function_007                                                ; address: 0x04ac
+
+        movlb   0x01
+        movf    ADRESH, W                                   ; reg: 0x09c
+        movlb   0x00
+        xorwf   0x6a, W                                     ; reg: 0x06a
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        goto    label_086
+        incf    0x6a, W                                     ; reg: 0x06a
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        goto    label_084
+        movlb   0x01
+        xorwf   ADRESH, W                                   ; reg: 0x09c
+        movlb   0x00
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        goto    label_086
+
+label_084                                                   ; address: 0x04ba
+
+        movf    0x6a, W                                     ; reg: 0x06a
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        goto    label_085
+        decf    0x6a, W                                     ; reg: 0x06a
+        movlb   0x01
+        xorwf   ADRESH, W                                   ; reg: 0x09c
+        movlb   0x00
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        goto    label_086
+
+label_085                                                   ; address: 0x04c3
+
+        movlb   0x01
+        movf    ADRESH, W                                   ; reg: 0x09c
+        movlb   0x00
+        movwf   0x6a                                        ; reg: 0x06a
+
+label_086                                                   ; address: 0x04c7
+
+        return
+
+        ; code
+
+        org     0x0500
+
+function_008                                                ; address: 0x0500
+
+        btfss   0x60, 0x1                                   ; reg: 0x060
+        bra     0x05ae
+        bcf     0x60, 0x1                                   ; reg: 0x060
+        movf    0x66, F                                     ; reg: 0x066
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x05ae
+        movlw   0xf8
+        andwf   0x20, W                                     ; reg: 0x020
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x05ae
+        movf    0x21, W                                     ; reg: 0x021
+        movwf   0x65                                        ; reg: 0x065
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x05ae
+        movf    0x22, W                                     ; reg: 0x022
+        movwf   FSR0L                                       ; reg: 0x004
+        movf    0x23, W                                     ; reg: 0x023
+        movwf   FSR0H                                       ; reg: 0x005
+        movf    0x20, W                                     ; reg: 0x020
+        brw
+        bra     0x051c
+        bra     0x054f
+        bra     0x0584
+        bra     0x05ae
+        bra     0x05ae
+        bra     0x054f
+        bra     0x05ae
+        bra     0x05ae
+
+label_087                                                   ; address: 0x051c
+
+        movlw   0x02
+        movwf   FSR1H                                       ; reg: 0x007
+        movlw   0xa0
+        movwf   FSR1L                                       ; reg: 0x006
+        movlw   0x0f
+        movwi   INDF1++
+        movwi   INDF1++
+        clrf    0x66                                        ; reg: 0x066
+        movlw   0x00
+        movwi   INDF1++
+        movf    0x65, W                                     ; reg: 0x065
+        call    function_009
+        movf    0x22, W                                     ; reg: 0x022
+        call    function_009
+        movf    0x23, W                                     ; reg: 0x023
+        call    function_009
+        bcf     INTCON, GIE                                 ; reg: 0x00b, bit: 7
+
+label_088                                                   ; address: 0x052d
+
+        moviw   INDF0++
+        call    function_009
+        decfsz  0x65, F                                     ; reg: 0x065
+        bra     0x052d
+        bsf     INTCON, GIE                                 ; reg: 0x00b, bit: 7
+
+label_089                                                   ; address: 0x0532
+
+        comf    0x66, W                                     ; reg: 0x066
+        addlw   0x01
+        movwi   INDF1++
+        movlw   0x04
+        movwi   INDF1++
+        movlw   0xa0
+        subwf   FSR1L, W                                    ; reg: 0x006
+        movwf   0x65                                        ; reg: 0x065
+        movlw   0xa0
+        movwf   0x64                                        ; reg: 0x064
+        bra     0x05ae
+
+function_009                                                ; address: 0x053d
+
+        movwf   0x62                                        ; reg: 0x062
+        xorlw   0x0f
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0549
+        movf    0x62, W                                     ; reg: 0x062
+        xorlw   0x04
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0549
+        movf    0x62, W                                     ; reg: 0x062
+        xorlw   0x05
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x054b
+
+label_090                                                   ; address: 0x0549
+
+        movlw   0x05
+        movwi   INDF1++
+
+label_091                                                   ; address: 0x054b
+
+        movf    0x62, W                                     ; reg: 0x062
+        addwf   0x66, F                                     ; reg: 0x066
+        movwi   INDF1++
+        return
+
+label_092                                                   ; address: 0x054f
+
+        movlw   0x24
+        movwf   FSR1L                                       ; reg: 0x006
+        clrf    FSR1H                                       ; reg: 0x007
+        bcf     INTCON, GIE                                 ; reg: 0x00b, bit: 7
+
+label_093                                                   ; address: 0x0553
+
+        moviw   INDF1++
+        movwi   INDF0++
+        decfsz  0x65, F                                     ; reg: 0x065
+        bra     0x0553
+        bsf     INTCON, GIE                                 ; reg: 0x00b, bit: 7
+        decf    0x20, W                                     ; reg: 0x020
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0572
+        movlw   0x02
+        movwf   FSR1H                                       ; reg: 0x007
+        movlw   0xa0
+        movwf   FSR1L                                       ; reg: 0x006
+        movlw   0x0f
+        movwi   INDF1++
+        movwi   INDF1++
+        movlw   0x05
+        call    function_009
+        movlw   0x03
+        call    function_009
+        movlw   0x60
+        call    function_009
+        movlw   0x00
+        call    function_009
+        movf    0x60, W                                     ; reg: 0x060
+        bcf     0x60, 0x6                                   ; reg: 0x060
+        call    function_009
+        movf    0x59, W                                     ; reg: 0x059
+        call    function_009
+        movf    0x5a, W                                     ; reg: 0x05a
+        call    function_009
+        bra     0x0532
+
+label_094                                                   ; address: 0x0572
+
+        movlw   0xa0
+        movwf   FSR0L                                       ; reg: 0x004
+        movlw   0x02
+        movwf   FSR0H                                       ; reg: 0x005
+        movlw   0x0f
+        movwi   INDF0++
+        movwi   INDF0++
+        movlw   0x01
+        movwi   INDF0++
+        movlw   0xff
+        movwi   INDF0++
+        movlw   0x04
+        movwf   INDF0                                       ; reg: 0x000
+        movlw   0x05
+        movwf   0x65                                        ; reg: 0x065
+        movlw   0xa0
+        movwf   0x64                                        ; reg: 0x064
+        bra     0x05ae
+
+label_095                                                   ; address: 0x0584
+
+        bcf     INTCON, GIE                                 ; reg: 0x00b, bit: 7
+        movlw   0x95
+        xorwf   FSR0L, W                                    ; reg: 0x004
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0594
+        movf    0x25, F                                     ; reg: 0x025
+        movlb   0x07
+        bcf     IOCBP, IOCBP0                               ; reg: 0x394, bit: 0
+        bcf     IOCBN, IOCBN0                               ; reg: 0x395, bit: 0
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0592
+        bsf     0x14, 0x0                                   ; reg: 0x014
+        clrf    TMR1L                                       ; reg: 0x016
+        bra     0x0594
+
+label_096                                                   ; address: 0x0592
+
+        bsf     TMR0, 0x0                                   ; reg: 0x015
+        clrf    TMR1L                                       ; reg: 0x016
+
+label_097                                                   ; address: 0x0594
+
+        movlb   0x00
+        movf    INDF0, W                                    ; reg: 0x000
+        andwf   0x24, W                                     ; reg: 0x024
+        iorwf   0x25, W                                     ; reg: 0x025
+        movwf   INDF0                                       ; reg: 0x000
+        bsf     INTCON, GIE                                 ; reg: 0x00b, bit: 7
+        movlw   0x02
+        movwf   FSR1H                                       ; reg: 0x007
+        movlw   0xa0
+        movwf   FSR1L                                       ; reg: 0x006
+        movlw   0x0f
+        movwi   INDF1++
+        movwi   INDF1++
+        movlw   0x02
+        movwf   0x66                                        ; reg: 0x066
+        movwi   INDF1++
+        movlw   0x01
+        addwf   0x66, F                                     ; reg: 0x066
+        movwi   INDF1++
+        movf    0x22, W                                     ; reg: 0x022
+        call    function_009
+        movf    0x23, W                                     ; reg: 0x023
+        call    function_009
+        movf    INDF0, W                                    ; reg: 0x000
+        call    function_009
+        bra     0x0532
+
+label_098                                                   ; address: 0x05ae
+
+        return
+
+        ; code
+
+        org     0x0600
+
+function_010                                                ; address: 0x0600
+
+        movf    0x64, F                                     ; reg: 0x064
+        btfsc   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0613
+        movlb   0x03
+        btfss   TXSTA, TRMT                                 ; reg: 0x19e, bit: 1
+        bra     0x0613
+        movlb   0x00
+        movf    0x64, W                                     ; reg: 0x064
+        movwf   FSR1L                                       ; reg: 0x006
+        movlw   0x02
+        movwf   FSR1H                                       ; reg: 0x007
+        movf    INDF1, W                                    ; reg: 0x001
+        movlb   0x03
+        movwf   TXREG                                       ; reg: 0x19a
+        movlb   0x00
+        incf    0x64, F                                     ; reg: 0x064
+        decfsz  0x65, F                                     ; reg: 0x065
+        bra     0x0613
+        clrf    0x64                                        ; reg: 0x064
+
+label_099                                                   ; address: 0x0613
+
+        movlb   0x00
+        return
+
+        ; code
+
+        org     0x0700
+
+function_011                                                ; address: 0x0700
+
+        movf    0x61, W                                     ; reg: 0x061
+        xorlw   0x0f
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x0716
+        btfsc   0x60, 0x0                                   ; reg: 0x060
+        bra     0x070a
+        movlw   0x20
+        movwf   0x63                                        ; reg: 0x063
+        clrf    0x66                                        ; reg: 0x066
+        return
+
+label_100                                                   ; address: 0x070a
+
+        bcf     0x60, 0x0                                   ; reg: 0x060
+        movf    0x63, W                                     ; reg: 0x063
+        movwf   FSR0L                                       ; reg: 0x004
+        clrf    FSR0H                                       ; reg: 0x005
+        movf    0x61, W                                     ; reg: 0x061
+        movwf   INDF0                                       ; reg: 0x000
+        addwf   0x66, F                                     ; reg: 0x066
+        incf    0x63, F                                     ; reg: 0x063
+        btfss   0x63, 0x6                                   ; reg: 0x063
+        return
+        decf    0x63, F                                     ; reg: 0x063
+        return
+
+label_101                                                   ; address: 0x0716
+
+        movf    0x61, W                                     ; reg: 0x061
+        xorlw   0x04
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x071e
+        btfsc   0x60, 0x0                                   ; reg: 0x060
+        bra     0x070a
+        bsf     0x60, 0x1                                   ; reg: 0x060
+        return
+
+label_102                                                   ; address: 0x071e
+
+        movf    0x61, W                                     ; reg: 0x061
+        xorlw   0x05
+        btfss   STATUS, Z                                   ; reg: 0x003, bit: 2
+        bra     0x070a
+        btfsc   0x60, 0x0                                   ; reg: 0x060
+        bra     0x070a
+        bsf     0x60, 0x0                                   ; reg: 0x060
+        return
+
+function_012                                                ; address: 0x0726
+
+        movlb   0x06
+        movlw   0xf0
+        andwf   CCP5CON, F                                  ; reg: 0x31e
+        movlb   0x00
+        return
+
+function_013                                                ; address: 0x072b
+
+        movlb   0x06
+        movlw   0x0c
+        iorwf   CCP5CON, F                                  ; reg: 0x31e
+        movlb   0x00
+        return
+        return
+
+        end

@@ -1,0 +1,1174 @@
+0000 0020       MOVLB  0                ; Move literal to BSR
+0001 018A       CLRF   PCLATH,f         ; Clear f
+0002 018B       CLRF   INTCON,f         ; Clear f
+0003 3201       BRA    L005             ; Relative Branch to 1
+0004 2A04       GOTO   L204             ; Go to address
+0005 0021 L005  MOVLB  1                ; Move literal to BSR
+0006 300F       MOVLW  0x0F             ; Move literal to W
+0007 0097       MOVWF  WDTCON           ; Move W to f
+0008 0020       MOVLB  0                ; Move literal to BSR
+0009 0023       MOVLB  3                ; Move literal to BSR
+000A 018C       CLRF   ANSELA,f         ; Clear f
+000B 018D       CLRF   ANSELB,f         ; Clear f
+000C 0020       MOVLB  0                ; Move literal to BSR
+000D 0021       MOVLB  1                ; Move literal to BSR
+000E 3000       MOVLW  0                ; Move literal to W
+000F 0099       MOVWF  OSCCON           ; Move W to f
+0010 0020       MOVLB  0                ; Move literal to BSR
+0011 0022       MOVLB  2                ; Move literal to BSR
+0012 3040       MOVLW  0x40             ; Move literal to W
+0013 009D       MOVWF  APFCON           ; Move W to f
+0014 0020       MOVLB  0                ; Move literal to BSR
+0015 0021       MOVLB  1                ; Move literal to BSR
+0016 3008       MOVLW  8                ; Move literal to W
+0017 0095       MOVWF  OPTION_REG       ; Move W to f
+0018 0020       MOVLB  0                ; Move literal to BSR
+0019 0021       MOVLB  1                ; Move literal to BSR
+001A 3001       MOVLW  1                ; Move literal to W
+001B 008C       MOVWF  TRISA            ; Move W to f
+001C 138D       BCF    TRISB,TRISB7     ; Bit Clear f
+001D 0020       MOVLB  0                ; Move literal to BSR
+001E 0022       MOVLB  2                ; Move literal to BSR
+001F 128E       BCF    LATC,LATC5       ; Bit Clear f
+0020 170E       BSF    LATC,LATC6       ; Bit Set f
+0021 0020       MOVLB  0                ; Move literal to BSR
+0022 0021       MOVLB  1                ; Move literal to BSR
+0023 3070       MOVLW  0x70             ; Move literal to W
+0024 0099       MOVWF  OSCCON           ; Move W to f
+0025 1E1A L025  BTFSS  OSCSTAT,HFIOFR   ; Bit Test f, Skip if Set
+0026 33FE       BRA    L025             ; Relative Branch to -2
+0027 1C1A L027  BTFSS  OSCSTAT,HFIOFS   ; Bit Test f, Skip if Set
+0028 33FE       BRA    L027             ; Relative Branch to -2
+0029 1F1A L029  BTFSS  OSCSTAT,PLLR     ; Bit Test f, Skip if Set
+002A 33FE       BRA    L029             ; Relative Branch to -2
+002B 0020       MOVLB  0                ; Move literal to BSR
+002C 0023       MOVLB  3                ; Move literal to BSR
+002D 30FF       MOVLW  0xFF             ; Move literal to W
+002E 0091       MOVWF  EEADRL           ; Move W to f
+002F 0195       CLRF   EECON1,f         ; Clear f
+0030 1415       BSF    EECON1,RD        ; Bit Set f
+0031 0A13       INCF   EEDATL,w         ; Increment f
+0032 0020       MOVLB  0                ; Move literal to BSR
+0033 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0034 3209       BRA    L03E             ; Relative Branch to 9
+0035 1A0D       BTFSC  PORTB,RB4        ; Bit Test f, Skip if Clear
+0036 2A00       GOTO   L200             ; Go to address
+0037 0023       MOVLB  3                ; Move literal to BSR
+0038 30FF       MOVLW  0xFF             ; Move literal to W
+0039 0091       MOVWF  EEADRL           ; Move W to f
+003A 0192       CLRF   EEADRH,f         ; Clear f
+003B 0093       MOVWF  EEDATL           ; Move W to f
+003C 215F       CALL   L15F             ; Call Subroutine
+003D 0001       RESET                   ; Software device Reset
+003E 0021 L03E  MOVLB  1                ; Move literal to BSR
+003F 300E       MOVLW  0x0E             ; Move literal to W
+0040 0097       MOVWF  WDTCON           ; Move W to f
+0041 0020       MOVLB  0                ; Move literal to BSR
+0042 0023 L042  MOVLB  3                ; Move literal to BSR
+0043 3080       MOVLW  0x80             ; Move literal to W
+0044 009D       MOVWF  RCSTA            ; Move W to f
+0045 3026       MOVLW  0x26             ; Move literal to W
+0046 009E       MOVWF  TXSTA            ; Move W to f
+0047 0021       MOVLB  1                ; Move literal to BSR
+0048 130E       BCF    TRISC,TRISC6     ; Bit Clear f
+0049 0021 L049  MOVLB  1                ; Move literal to BSR
+004A 3003       MOVLW  3                ; Move literal to W
+004B 0095       MOVWF  OPTION_REG       ; Move W to f
+004C 0023       MOVLB  3                ; Move literal to BSR
+004D 121D       BCF    RCSTA,CREN       ; Bit Clear f
+004E 0020       MOVLB  0                ; Move literal to BSR
+004F 1B8E L04F  BTFSC  PORTC,RC7        ; Bit Test f, Skip if Clear
+0050 33FE       BRA    L04F             ; Relative Branch to -2
+0051 1F8E L051  BTFSS  PORTC,RC7        ; Bit Test f, Skip if Set
+0052 33FE       BRA    L051             ; Relative Branch to -2
+0053 0195       CLRF   TMR0,f           ; Clear f
+0054 1B8E L054  BTFSC  PORTC,RC7        ; Bit Test f, Skip if Clear
+0055 33FE       BRA    L054             ; Relative Branch to -2
+0056 1F8E L056  BTFSS  PORTC,RC7        ; Bit Test f, Skip if Set
+0057 33FE       BRA    L056             ; Relative Branch to -2
+0058 0815       MOVF   TMR0,w           ; Move f
+0059 00F3       MOVWF  PIR3             ; Move W to f
+005A 1003       BCF    STATUS,C         ; Bit Clear f
+005B 0C73       RRF    PIR3,w           ; Rotate Right f through Carry
+005C 1C03       BTFSS  STATUS,C         ; Bit Test f, Skip if Set
+005D 3EFF       ADDLW  0xFF             ; Add literal and W
+005E 0023       MOVLB  3                ; Move literal to BSR
+005F 3022       MOVLW  0x22             ; Move literal to W
+0060 009B       MOVWF  SP1BRGL          ; Move W to f
+0061 019C       CLRF   SP1BRGH,f        ; Clear f
+0062 161D       BSF    RCSTA,CREN       ; Bit Set f
+0063 0819       MOVF   RCREG,w          ; Move f
+0064 0819       MOVF   RCREG,w          ; Move f
+0065 0021       MOVLB  1                ; Move literal to BSR
+0066 30FF       MOVLW  0xFF             ; Move literal to W
+0067 0095       MOVWF  OPTION_REG       ; Move W to f
+0068 0023       MOVLB  3                ; Move literal to BSR
+0069 189D       BTFSC  RCSTA,OERR       ; Bit Test f, Skip if Clear
+006A 33D7       BRA    L042             ; Relative Branch to -41
+006B 0020       MOVLB  0                ; Move literal to BSR
+006C 1E91 L06C  BTFSS  PIR1,RCIF        ; Bit Test f, Skip if Set
+006D 33FE       BRA    L06C             ; Relative Branch to -2
+006E 0023       MOVLB  3                ; Move literal to BSR
+006F 0819       MOVF   RCREG,w          ; Move f
+0070 00F4       MOVWF  EEDATH           ; Move W to f
+0071 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0072 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0073 33D5       BRA    L049             ; Relative Branch to -43
+0074 3000       MOVLW  0                ; Move literal to W
+0075 0084       MOVWF  FSR0L            ; Move W to f
+0076 3020       MOVLW  0x20             ; Move literal to W
+0077 0085       MOVWF  FSR0H            ; Move W to f
+0078 01F1       CLRF   EEADRL,f         ; Clear f
+0079 189D L079  BTFSC  RCSTA,OERR       ; Bit Test f, Skip if Clear
+007A 33C7       BRA    L042             ; Relative Branch to -57
+007B 0020       MOVLB  0                ; Move literal to BSR
+007C 1E91 L07C  BTFSS  PIR1,RCIF        ; Bit Test f, Skip if Set
+007D 33FE       BRA    L07C             ; Relative Branch to -2
+007E 0023       MOVLB  3                ; Move literal to BSR
+007F 0819       MOVF   RCREG,w          ; Move f
+0080 00F4       MOVWF  EEDATH           ; Move W to f
+0081 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0082 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0083 33C5       BRA    L049             ; Relative Branch to -59
+0084 0874       MOVF   EEDATH,w         ; Move f
+0085 3A04       XORLW  4                ; Exclusive OR literal with W
+0086 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0087 3211       BRA    L099             ; Relative Branch to 17
+0088 0874       MOVF   EEDATH,w         ; Move f
+0089 3A05       XORLW  5                ; Exclusive OR literal with W
+008A 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+008B 3209       BRA    L095             ; Relative Branch to 9
+008C 0023       MOVLB  3                ; Move literal to BSR
+008D 189D       BTFSC  RCSTA,OERR       ; Bit Test f, Skip if Clear
+008E 33B3       BRA    L042             ; Relative Branch to -77
+008F 0020       MOVLB  0                ; Move literal to BSR
+0090 1E91 L090  BTFSS  PIR1,RCIF        ; Bit Test f, Skip if Set
+0091 33FE       BRA    L090             ; Relative Branch to -2
+0092 0023       MOVLB  3                ; Move literal to BSR
+0093 0819       MOVF   RCREG,w          ; Move f
+0094 00F4       MOVWF  EEDATH           ; Move W to f
+0095 0874 L095  MOVF   EEDATH,w         ; Move f
+0096 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0097 07F1       ADDRWF EEADRL,f         ; Add W and f
+0098 33E0       BRA    L079             ; Relative Branch to -32
+0099 08F1 L099  MOVF   EEADRL,f         ; Move f
+009A 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+009B 33AD       BRA    L049             ; Relative Branch to -83
+009C 0022       MOVLB  2                ; Move literal to BSR
+009D 3040       MOVLW  0x40             ; Move literal to W
+009E 068C       XORWF  LATA,f           ; Exclusive OR literal with W
+009F 3000       MOVLW  0                ; Move literal to W
+00A0 0086       MOVWF  FSR1L            ; Move W to f
+00A1 3020       MOVLW  0x20             ; Move literal to W
+00A2 0087       MOVWF  FSR1H            ; Move W to f
+00A3 3F41       MOVIW  1[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00A4 00F2       MOVWF  CM1CON1          ; Move W to f
+00A5 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+00A6 0001       RESET                   ; Software device Reset
+00A7 0023       MOVLB  3                ; Move literal to BSR
+00A8 3F42       MOVIW  2[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00A9 0091       MOVWF  EEADRL           ; Move W to f
+00AA 3F43       MOVIW  3[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00AB 0092       MOVWF  EEADRH           ; Move W to f
+00AC 0020       MOVLB  0                ; Move literal to BSR
+00AD 08A0       MOVF   INDF0,f          ; Move f
+00AE 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+00AF 3203       BRA    L0B3             ; Relative Branch to 3
+00B0 3EE0       ADDLW  0xE0             ; Add literal and W
+00B1 1803       BTFSC  STATUS,C         ; Bit Test f, Skip if Clear
+00B2 3396       BRA    L049             ; Relative Branch to -106
+00B3 3005 L0B3  MOVLW  5                ; Move literal to W
+00B4 0084       MOVWF  FSR0L            ; Move W to f
+00B5 3020       MOVLW  0x20             ; Move literal to W
+00B6 0085       MOVWF  FSR0H            ; Move W to f
+00B7 3F40       MOVIW  0[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00B8 3C07       SUBLW  7                ; Subtract W from literal
+00B9 1C03       BTFSS  STATUS,C         ; Bit Test f, Skip if Set
+00BA 338E       BRA    L049             ; Relative Branch to -114
+00BB 3F40       MOVIW  0[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00BC 000B       BRW                     ; Relative Branch with W
+00BD 3207       BRA    L0C5             ; Relative Branch to 7
+00BE 320F       BRA    L0CE             ; Relative Branch to 15
+00BF 3223       BRA    L0E3             ; Relative Branch to 35
+00C0 324B       BRA    L10C             ; Relative Branch to 75
+00C1 3256       BRA    L118             ; Relative Branch to 86
+00C2 3261       BRA    L124             ; Relative Branch to 97
+00C3 3239       BRA    L0FD             ; Relative Branch to 57
+00C4 3245       BRA    L10A             ; Relative Branch to 69
+00C5 3000 L0C5  MOVLW  0                ; Move literal to W
+00C6 3FC2       MOVWI  2[INDF1]         ; Move W to INDF2, Indexed Indirect.
+00C7 3001       MOVLW  1                ; Move literal to W
+00C8 0023       MOVLB  3                ; Move literal to BSR
+00C9 081B       MOVF   SP1BRGL,w        ; Move f
+00CA 0020       MOVLB  0                ; Move literal to BSR
+00CB 3FC3       MOVWI  3[INDF1]         ; Move W to INDF3, Indexed Indirect.
+00CC 3004       MOVLW  4                ; Move literal to W
+00CD 3260       BRA    L12E             ; Relative Branch to 96
+00CE 0023 L0CE  MOVLB  3                ; Move literal to BSR
+00CF 1795       BSF    EECON1,EEPGD     ; Bit Set f
+00D0 1315       BCF    EECON1,CFGS      ; Bit Clear f
+00D1 1415       BSF    EECON1,RD        ; Bit Set f
+00D2 0000       NOP                     ; No Operation
+00D3 0000       NOP                     ; No Operation
+00D4 0813       MOVF   EEDATL,w         ; Move f
+00D5 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+00D6 0814       MOVF   EEDATH,w         ; Move f
+00D7 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+00D8 0A91       INCF   EEADRL,f         ; Increment f
+00D9 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+00DA 0A92       INCF   EEADRH,f         ; Increment f
+00DB 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+00DC 33F1       BRA    L0CE             ; Relative Branch to -15
+00DD 0020 L0DD  MOVLB  0                ; Move literal to BSR
+00DE 1003       BCF    STATUS,C         ; Bit Clear f
+00DF 3F41       MOVIW  1[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00E0 0D89       RLF    WREG,f           ; Rotate Left f through Carry
+00E1 3E05       ADDLW  5                ; Add literal and W
+00E2 324B       BRA    L12E             ; Relative Branch to 75
+00E3 0023 L0E3  MOVLB  3                ; Move literal to BSR
+00E4 1795 L0E4  BSF    EECON1,EEPGD     ; Bit Set f
+00E5 1315       BCF    EECON1,CFGS      ; Bit Clear f
+00E6 1515       BSF    EECON1,WREN      ; Bit Set f
+00E7 1695       BSF    EECON1,LWLO      ; Bit Set f
+00E8 0012       MOVIW  INDF0++          ; Move INDF0 to W, post inc
+00E9 0093       MOVWF  EEDATL           ; Move W to f
+00EA 0012       MOVIW  INDF0++          ; Move INDF0 to W, post inc
+00EB 0094       MOVWF  EEDATH           ; Move W to f
+00EC 2157       CALL   L157             ; Call Subroutine
+00ED 0811       MOVF   EEADRL,w         ; Move f
+00EE 3A07       XORLW  7                ; Exclusive OR literal with W
+00EF 3907       ANDLW  7                ; AND literal with W
+00F0 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+00F1 3204       BRA    L0F6             ; Relative Branch to 4
+00F2 0F91 L0F2  INCFSZ EEADRL,f         ; Increment f, Skip if 0
+00F3 33F0       BRA    L0E4             ; Relative Branch to -16
+00F4 0A92       INCF   EEADRH,f         ; Increment f
+00F5 33EE       BRA    L0E4             ; Relative Branch to -18
+00F6 1295 L0F6  BCF    EECON1,LWLO      ; Bit Clear f
+00F7 2157       CALL   L157             ; Call Subroutine
+00F8 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+00F9 33F8       BRA    L0F2             ; Relative Branch to -8
+00FA 1115       BCF    EECON1,WREN      ; Bit Clear f
+00FB 0020       MOVLB  0                ; Move literal to BSR
+00FC 3230       BRA    L12D             ; Relative Branch to 48
+00FD 0023 L0FD  MOVLB  3                ; Move literal to BSR
+00FE 1715       BSF    EECON1,CFGS      ; Bit Set f
+00FF 1415       BSF    EECON1,RD        ; Bit Set f
+0100 0000       NOP                     ; No Operation
+0101 0000       NOP                     ; No Operation
+0102 0813       MOVF   EEDATL,w         ; Move f
+0103 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0104 0814       MOVF   EEDATH,w         ; Move f
+0105 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0106 0A91       INCF   EEADRL,f         ; Increment f
+0107 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+0108 33F4       BRA    L0FD             ; Relative Branch to -12
+0109 33D3       BRA    L0DD             ; Relative Branch to -45
+010A 0020 L10A  MOVLB  0                ; Move literal to BSR
+010B 3221       BRA    L12D             ; Relative Branch to 33
+010C 0023 L10C  MOVLB  3                ; Move literal to BSR
+010D 3094       MOVLW  0x94             ; Move literal to W
+010E 0095       MOVWF  EECON1           ; Move W to f
+010F 2157       CALL   L157             ; Call Subroutine
+0110 3020       MOVLW  0x20             ; Move literal to W
+0111 0791       ADDRWF EEADRL,f         ; Add W and f
+0112 0189       CLRF   WREG,f           ; Clear f
+0113 3D92       SUBLW  0x92             ; Subtract W from literal
+0114 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+0115 33F6       BRA    L10C             ; Relative Branch to -10
+0116 0020       MOVLB  0                ; Move literal to BSR
+0117 3215       BRA    L12D             ; Relative Branch to 21
+0118 0023 L118  MOVLB  3                ; Move literal to BSR
+0119 0195       CLRF   EECON1,f         ; Clear f
+011A 1415       BSF    EECON1,RD        ; Bit Set f
+011B 0813       MOVF   EEDATL,w         ; Move f
+011C 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+011D 0A91       INCF   EEADRL,f         ; Increment f
+011E 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+011F 33F8       BRA    L118             ; Relative Branch to -8
+0120 0020       MOVLB  0                ; Move literal to BSR
+0121 0801       MOVF   INDF1,w          ; Move f
+0122 3E05       ADDLW  5                ; Add literal and W
+0123 320A       BRA    L12E             ; Relative Branch to 10
+0124 0023 L124  MOVLB  3                ; Move literal to BSR
+0125 0012       MOVIW  INDF0++          ; Move INDF0 to W, post inc
+0126 0093       MOVWF  EEDATL           ; Move W to f
+0127 215F       CALL   L15F             ; Call Subroutine
+0128 0A91       INCF   EEADRL,f         ; Increment f
+0129 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+012A 33F9       BRA    L124             ; Relative Branch to -7
+012B 0020       MOVLB  0                ; Move literal to BSR
+012C 3200       BRA    L12D             ; Relative Branch to 0
+012D 3001 L12D  MOVLW  1                ; Move literal to W
+012E 00F2 L12E  MOVWF  PIR2             ; Move W to f
+012F 300F       MOVLW  0x0F             ; Move literal to W
+0130 2151       CALL   L151             ; Call Subroutine
+0131 2151       CALL   L151             ; Call Subroutine
+0132 01F1       CLRF   PIR1,f           ; Clear f
+0133 3000       MOVLW  0                ; Move literal to W
+0134 0084       MOVWF  FSR0L            ; Move W to f
+0135 3020       MOVLW  0x20             ; Move literal to W
+0136 0085       MOVWF  FSR0H            ; Move W to f
+0137 0012 L137  MOVIW  INDF0++          ; Move INDF0 to W, post inc
+0138 07F1       ADDRWF PIR1,f           ; Add W and f
+0139 2142       CALL   L142             ; Call Subroutine
+013A 0BF2       DECFSZ PIR2,f           ; Decrement f, Skip if 0
+013B 33FB       BRA    L137             ; Relative Branch to -5
+013C 0971       COMF   PIR1,w           ; Complement f
+013D 3E01       ADDLW  1                ; Add literal and W
+013E 2142       CALL   L142             ; Call Subroutine
+013F 3004       MOVLW  4                ; Move literal to W
+0140 2151       CALL   L151             ; Call Subroutine
+0141 2849       GOTO   L049             ; Go to address
+0142 00F5 L142  MOVWF  TMR0             ; Move W to f
+0143 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0144 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0145 3208       BRA    L14E             ; Relative Branch to 8
+0146 0875       MOVF   TMR0,w           ; Move f
+0147 3A04       XORLW  4                ; Exclusive OR literal with W
+0148 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0149 3204       BRA    L14E             ; Relative Branch to 4
+014A 0875       MOVF   TMR0,w           ; Move f
+014B 3A05       XORLW  5                ; Exclusive OR literal with W
+014C 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+014D 2950       GOTO   L150             ; Go to address
+014E 3005 L14E  MOVLW  5                ; Move literal to W
+014F 2151       CALL   L151             ; Call Subroutine
+0150 0875 L150  MOVF   TMR0,w           ; Move f
+0151 0023 L151  MOVLB  3                ; Move literal to BSR
+0152 1C9E L152  BTFSS  TXSTA,TRMT       ; Bit Test f, Skip if Set
+0153 33FE       BRA    L152             ; Relative Branch to -2
+0154 009A       MOVWF  TXREG            ; Move W to f
+0155 0020       MOVLB  0                ; Move literal to BSR
+0156 0008       RETURN                  ; Return from Subroutine
+0157 3055 L157  MOVLW  0x55             ; Move literal to W
+0158 0096       MOVWF  TMR1L            ; Move W to f
+0159 30AA       MOVLW  0xAA             ; Move literal to W
+015A 0096       MOVWF  TMR1L            ; Move W to f
+015B 1495       BSF    TMR0,1           ; Bit Set f
+015C 0000       NOP                     ; No Operation
+015D 0000       NOP                     ; No Operation
+015E 0008       RETURN                  ; Return from Subroutine
+015F 3004 L15F  MOVLW  4                ; Move literal to W
+0160 0095       MOVWF  TMR0             ; Move W to f
+0161 2157       CALL   L157             ; Call Subroutine
+0162 1895 L162  BTFSC  TMR0,1           ; Bit Test f, Skip if Clear
+0163 33FE       BRA    L162             ; Relative Branch to -2
+0164 0008       RETURN                  ; Return from Subroutine
+0200 2B00 L200  GOTO   L300             ; Go to address
+0204 0020 L204  MOVLB  0                ; Move literal to BSR
+0205 1C8B       BTFSS  INTCON,INTF      ; Bit Test f, Skip if Set
+0206 3211       BRA    L218             ; Relative Branch to 17
+0207 108B       BCF    INTCON,INTF      ; Bit Clear f
+0208 1760 L208  BSF    INDF0,6          ; Bit Set f
+0209 08E9       MOVF   WREG,f           ; Move f
+020A 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+020B 328C       BRA    L298             ; Relative Branch to 140
+020C 1AE0       BTFSC  INDF0,5          ; Bit Test f, Skip if Clear
+020D 328A       BRA    L298             ; Relative Branch to 138
+020E 16E0       BSF    INDF0,5          ; Bit Set f
+020F 3005       MOVLW  5                ; Move literal to W
+0210 00E9       MOVWF  WREG             ; Move W to f
+0211 1FDC       BTFSS  T2CON,7          ; Bit Test f, Skip if Set
+0212 3204       BRA    L217             ; Relative Branch to 4
+0213 13DC       BCF    T2CON,7          ; Bit Clear f
+0214 085C       MOVF   T2CON,w          ; Move f
+0215 00DD       MOVWF  0x5D             ; Move W to f
+0216 272B       CALL   L72B             ; Call Subroutine
+0217 321F L217  BRA    L237             ; Relative Branch to 31
+0218 1F12 L218  BTFSS  PIR2,C2IF        ; Bit Test f, Skip if Set
+0219 320E       BRA    L228             ; Relative Branch to 14
+021A 1312       BCF    PIR2,C2IF        ; Bit Clear f
+021B 0022       MOVLB  2                ; Move literal to BSR
+021C 1F13       BTFSS  CM2CON0,C2OUT    ; Bit Test f, Skip if Set
+021D 3205       BRA    L223             ; Relative Branch to 5
+021E 0021       MOVLB  1                ; Move literal to BSR
+021F 1F15       BTFSS  OPTION_REG,INTEDG; Bit Test f, Skip if Set
+0220 320C       BRA    L22D             ; Relative Branch to 12
+0221 0020       MOVLB  0                ; Move literal to BSR
+0222 33E5       BRA    L208             ; Relative Branch to -27
+0223 0021 L223  MOVLB  1                ; Move literal to BSR
+0224 1B15       BTFSC  OPTION_REG,INTEDG; Bit Test f, Skip if Clear
+0225 3207       BRA    L22D             ; Relative Branch to 7
+0226 0020       MOVLB  0                ; Move literal to BSR
+0227 33E0       BRA    L208             ; Relative Branch to -32
+0228 1C0B L228  BTFSS  INTCON,IOCIF     ; Bit Test f, Skip if Set
+0229 3207       BRA    L231             ; Relative Branch to 7
+022A 100B       BCF    INTCON,IOCIF     ; Bit Clear f
+022B 0027       MOVLB  7                ; Move literal to BSR
+022C 1016       BCF    IOCBF,IOCBF0     ; Bit Clear f
+022D 0020 L22D  MOVLB  0                ; Move literal to BSR
+022E 3005       MOVLW  5                ; Move literal to W
+022F 00E9       MOVWF  WREG             ; Move W to f
+0230 3267       BRA    L298             ; Relative Branch to 103
+0231 1D0B L231  BTFSS  INTCON,TMR0IF    ; Bit Test f, Skip if Set
+0232 3211       BRA    L244             ; Relative Branch to 17
+0233 110B       BCF    INTCON,TMR0IF    ; Bit Clear f
+0234 1E8B       BTFSS  INTCON,TMR0IE    ; Bit Test f, Skip if Set
+0235 320E       BRA    L244             ; Relative Branch to 14
+0236 3261       BRA    L298             ; Relative Branch to 97
+0237 128B L237  BCF    INTCON,TMR0IE    ; Bit Clear f
+0238 2299       CALL   L299             ; Call Subroutine
+0239 01DB       CLRF   PR2,f            ; Clear f
+023A 3003       MOVLW  3                ; Move literal to W
+023B 1DFA       BTFSS  TMR2,3           ; Bit Test f, Skip if Set
+023C 00DB       MOVWF  PR2              ; Move W to f
+023D 22AA       CALL   L2AA             ; Call Subroutine
+023E 087B       MOVF   PR2,w            ; Move f
+023F 00D8       MOVWF  T1CON            ; Move W to f
+0240 0AD9       INCF   T1GCON,f         ; Increment f
+0241 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0242 0ADA       INCF   TMR2,f           ; Increment f
+0243 3254       BRA    L298             ; Relative Branch to 84
+0244 1C11 L244  BTFSS  PIR1,TMR1IF      ; Bit Test f, Skip if Set
+0245 3240       BRA    L286             ; Relative Branch to 64
+0246 085B       MOVF   PR2,w            ; Move f
+0247 3903       ANDLW  3                ; AND literal with W
+0248 000B       BRW                     ; Relative Branch with W
+0249 321D       BRA    L267             ; Relative Branch to 29
+024A 3213       BRA    L25E             ; Relative Branch to 19
+024B 3209       BRA    L255             ; Relative Branch to 9
+024C 0025       MOVLB  5                ; Move literal to BSR
+024D 0871       MOVF   CCPR1L,w         ; Move f
+024E 0092       MOVWF  CCPR1H           ; Move W to f
+024F 0870       MOVF   0x70,w           ; Move f
+0250 0091       MOVWF  CCPR1L           ; Move W to f
+0251 3009       MOVLW  9                ; Move literal to W
+0252 1C7A       BTFSS  CCP2CON,CCP2M0   ; Bit Test f, Skip if Set
+0253 0093       MOVWF  CCP1CON          ; Move W to f
+0254 3229       BRA    L27E             ; Relative Branch to 41
+0255 0025 L255  MOVLB  5                ; Move literal to BSR
+0256 0873       MOVF   CCP1CON,w        ; Move f
+0257 0099       MOVWF  CCPR2H           ; Move W to f
+0258 0872       MOVF   CCPR1H,w         ; Move f
+0259 0098       MOVWF  CCPR2L           ; Move W to f
+025A 3009       MOVLW  9                ; Move literal to W
+025B 1CFA       BTFSS  CCP2CON,CCP2M1   ; Bit Test f, Skip if Set
+025C 009A       MOVWF  CCP2CON          ; Move W to f
+025D 3220       BRA    L27E             ; Relative Branch to 32
+025E 0026 L25E  MOVLB  6                ; Move literal to BSR
+025F 0875       MOVF   ECCP3AS,w        ; Move f
+0260 0092       MOVWF  CCPR3H           ; Move W to f
+0261 0874       MOVF   PWM3CON,w        ; Move f
+0262 0091       MOVWF  CCPR3L           ; Move W to f
+0263 3009       MOVLW  9                ; Move literal to W
+0264 1D7A       BTFSS  CCP4CON,CCP4M2   ; Bit Test f, Skip if Set
+0265 0093       MOVWF  CCP3CON          ; Move W to f
+0266 3217       BRA    L27E             ; Relative Branch to 23
+0267 0026 L267  MOVLB  6                ; Move literal to BSR
+0268 0875       MOVF   ECCP3AS,w        ; Move f
+0269 0092       MOVWF  CCPR3H           ; Move W to f
+026A 0874       MOVF   PWM3CON,w        ; Move f
+026B 0091       MOVWF  CCPR3L           ; Move W to f
+026C 3009       MOVLW  9                ; Move literal to W
+026D 1D7A       BTFSS  CCP4CON,CCP4M2   ; Bit Test f, Skip if Set
+026E 0093       MOVWF  CCP3CON          ; Move W to f
+026F 0025       MOVLB  5                ; Move literal to BSR
+0270 0873       MOVF   CCP1CON,w        ; Move f
+0271 0099       MOVWF  CCPR2H           ; Move W to f
+0272 0872       MOVF   CCPR1H,w         ; Move f
+0273 0098       MOVWF  CCPR2L           ; Move W to f
+0274 3009       MOVLW  9                ; Move literal to W
+0275 1CFA       BTFSS  CCP2CON,CCP2M1   ; Bit Test f, Skip if Set
+0276 009A       MOVWF  CCP2CON          ; Move W to f
+0277 0871       MOVF   CCPR1L,w         ; Move f
+0278 0092       MOVWF  CCPR1H           ; Move W to f
+0279 0870       MOVF   0x70,w           ; Move f
+027A 0091       MOVWF  CCPR1L           ; Move W to f
+027B 3009       MOVLW  9                ; Move literal to W
+027C 1C7A       BTFSS  CCP2CON,CCP2M0   ; Bit Test f, Skip if Set
+027D 0093       MOVWF  CCP1CON          ; Move W to f
+027E 0020 L27E  MOVLB  0                ; Move literal to BSR
+027F 3008       MOVLW  8                ; Move literal to W
+0280 0022       MOVLB  2                ; Move literal to BSR
+0281 1EFA       BTFSS  SRCON0,SRCLK1    ; Bit Test f, Skip if Set
+0282 068D       XORWF  LATB,f           ; Exclusive OR literal with W
+0283 0020       MOVLB  0                ; Move literal to BSR
+0284 1011       BCF    PIR1,TMR1IF      ; Bit Clear f
+0285 3212       BRA    L298             ; Relative Branch to 18
+0286 1E93 L286  BTFSS  PIR3,CCP4IF      ; Bit Test f, Skip if Set
+0287 3210       BRA    L298             ; Relative Branch to 16
+0288 1293       BCF    PIR3,CCP4IF      ; Bit Clear f
+0289 0026       MOVLB  6                ; Move literal to BSR
+028A 019A       CLRF   CCP4CON,f        ; Clear f
+028B 0020       MOVLB  0                ; Move literal to BSR
+028C 1018       BCF    T1CON,TMR1ON     ; Bit Clear f
+028D 3008       MOVLW  8                ; Move literal to W
+028E 0022       MOVLB  2                ; Move literal to BSR
+028F 1AFA       BTFSC  SRCON0,SRCLK1    ; Bit Test f, Skip if Clear
+0290 068D       XORWF  LATB,f           ; Exclusive OR literal with W
+0291 0020       MOVLB  0                ; Move literal to BSR
+0292 08DB       MOVF   PR2,f            ; Move f
+0293 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0294 3202       BRA    L297             ; Relative Branch to 2
+0295 0BDB       DECFSZ PR2,f            ; Decrement f, Skip if 0
+0296 3201       BRA    L298             ; Relative Branch to 1
+0297 12E0 L297  BCF    INDF0,5          ; Bit Clear f
+0298 0009 L298  RETFIE                  ; Return from interrupt
+0299 1018 L299  BCF    T1CON,TMR1ON     ; Bit Clear f
+029A 087D       MOVF   0x7D,w           ; Move f
+029B 0096       MOVWF  TMR1L            ; Move W to f
+029C 087E       MOVF   CPSCON0,w        ; Move f
+029D 0097       MOVWF  TMR1H            ; Move W to f
+029E 1418       BSF    T1CON,TMR1ON     ; Bit Set f
+029F 0021       MOVLB  1                ; Move literal to BSR
+02A0 1411       BSF    PIE1,TMR1IE      ; Bit Set f
+02A1 0020       MOVLB  0                ; Move literal to BSR
+02A2 1011       BCF    PIR1,TMR1IF      ; Bit Clear f
+02A3 0022       MOVLB  2                ; Move literal to BSR
+02A4 1A7A       BTFSC  SRCON0,SRCLK0    ; Bit Test f, Skip if Clear
+02A5 158D       BSF    LATB,LATB3       ; Bit Set f
+02A6 1E7A       BTFSS  SRCON0,SRCLK0    ; Bit Test f, Skip if Set
+02A7 118D       BCF    LATB,LATB3       ; Bit Clear f
+02A8 0020       MOVLB  0                ; Move literal to BSR
+02A9 0008       RETURN                  ; Return from Subroutine
+02AA 13E0 L2AA  BCF    INDF0,7          ; Bit Clear f
+02AB 0025       MOVLB  5                ; Move literal to BSR
+02AC 3008       MOVLW  8                ; Move literal to W
+02AD 0191       CLRF   CCPR1L,f         ; Clear f
+02AE 0192       CLRF   CCPR1H,f         ; Clear f
+02AF 0093       MOVWF  CCP1CON          ; Move W to f
+02B0 187A       BTFSC  CCP2CON,CCP2M0   ; Bit Test f, Skip if Clear
+02B1 0193       CLRF   CCP1CON,f        ; Clear f
+02B2 0198       CLRF   CCPR2L,f         ; Clear f
+02B3 0199       CLRF   CCPR2H,f         ; Clear f
+02B4 009A       MOVWF  CCP2CON          ; Move W to f
+02B5 18FA       BTFSC  CCP2CON,CCP2M1   ; Bit Test f, Skip if Clear
+02B6 019A       CLRF   CCP2CON,f        ; Clear f
+02B7 0026       MOVLB  6                ; Move literal to BSR
+02B8 0191       CLRF   CCPR3L,f         ; Clear f
+02B9 0192       CLRF   CCPR3H,f         ; Clear f
+02BA 0093       MOVWF  CCP3CON          ; Move W to f
+02BB 197A       BTFSC  CCP4CON,CCP4M2   ; Bit Test f, Skip if Clear
+02BC 0193       CLRF   CCP3CON,f        ; Clear f
+02BD 0020       MOVLB  0                ; Move literal to BSR
+02BE 085B       MOVF   PR2,w            ; Move f
+02BF 0025       MOVLB  5                ; Move literal to BSR
+02C0 3903       ANDLW  3                ; AND literal with W
+02C1 000B       BRW                     ; Relative Branch with W
+02C2 320C       BRA    L2CF             ; Relative Branch to 12
+02C3 3209       BRA    L2CD             ; Relative Branch to 9
+02C4 3204       BRA    L2C9             ; Relative Branch to 4
+02C5 019A       CLRF   CCP2CON,f        ; Clear f
+02C6 0026       MOVLB  6                ; Move literal to BSR
+02C7 0193       CLRF   CCP3CON,f        ; Clear f
+02C8 3206       BRA    L2CF             ; Relative Branch to 6
+02C9 0193 L2C9  CLRF   CCP3CON,f        ; Clear f
+02CA 0026       MOVLB  6                ; Move literal to BSR
+02CB 0193       CLRF   CCP3CON,f        ; Clear f
+02CC 3202       BRA    L2CF             ; Relative Branch to 2
+02CD 0193 L2CD  CLRF   CCP3CON,f        ; Clear f
+02CE 019A       CLRF   CCP4CON,f        ; Clear f
+02CF 0026 L2CF  MOVLB  6                ; Move literal to BSR
+02D0 019A       CLRF   CCP4CON,f        ; Clear f
+02D1 0879       MOVF   CCPR4H,w         ; Move f
+02D2 0099       MOVWF  CCPR4H           ; Move W to f
+02D3 0878       MOVF   CCPR4L,w         ; Move f
+02D4 0098       MOVWF  CCPR4L           ; Move W to f
+02D5 300A       MOVLW  0x0A             ; Move literal to W
+02D6 009A       MOVWF  CCP4CON          ; Move W to f
+02D7 0021       MOVLB  1                ; Move literal to BSR
+02D8 1693       BSF    PIE3,CCP4IE      ; Bit Set f
+02D9 0020       MOVLB  0                ; Move literal to BSR
+02DA 0008       RETURN                  ; Return from Subroutine
+0300 0022 L300  MOVLB  2                ; Move literal to BSR
+0301 3044       MOVLW  0x44             ; Move literal to W
+0302 009D       MOVWF  APFCON           ; Move W to f
+0303 0020       MOVLB  0                ; Move literal to BSR
+0304 0021       MOVLB  1                ; Move literal to BSR
+0305 3003       MOVLW  3                ; Move literal to W
+0306 0095       MOVWF  OPTION_REG       ; Move W to f
+0307 0020       MOVLB  0                ; Move literal to BSR
+0308 0023       MOVLB  3                ; Move literal to BSR
+0309 018C       CLRF   ANSELA,f         ; Clear f
+030A 158C       BSF    ANSELA,ANSA3     ; Bit Set f
+030B 0020       MOVLB  0                ; Move literal to BSR
+030C 0021       MOVLB  1                ; Move literal to BSR
+030D 30AA       MOVLW  0xAA             ; Move literal to W
+030E 008C       MOVWF  TRISA            ; Move W to f
+030F 3051       MOVLW  0x51             ; Move literal to W
+0310 008D       MOVWF  TRISB            ; Move W to f
+0311 30C0       MOVLW  0xC0             ; Move literal to W
+0312 008E       MOVWF  TRISC            ; Move W to f
+0313 30FF       MOVLW  0xFF             ; Move literal to W
+0314 0090       MOVWF  TRISE            ; Move W to f
+0315 0020       MOVLB  0                ; Move literal to BSR
+0316 0022       MOVLB  2                ; Move literal to BSR
+0317 30EF       MOVLW  0xEF             ; Move literal to W
+0318 008C       MOVWF  LATA             ; Move W to f
+0319 3051       MOVLW  0x51             ; Move literal to W
+031A 008D       MOVWF  LATB             ; Move W to f
+031B 30C0       MOVLW  0xC0             ; Move literal to W
+031C 008E       MOVWF  LATC             ; Move W to f
+031D 30FF       MOVLW  0xFF             ; Move literal to W
+031E 0090       MOVWF  LATE             ; Move W to f
+031F 0020       MOVLB  0                ; Move literal to BSR
+0320 0024       MOVLB  4                ; Move literal to BSR
+0321 3011       MOVLW  0x11             ; Move literal to W
+0322 008D       MOVWF  WPUB             ; Move W to f
+0323 0020       MOVLB  0                ; Move literal to BSR
+0324 0027       MOVLB  7                ; Move literal to BSR
+0325 0194       CLRF   IOCBP,f          ; Clear f
+0326 0195       CLRF   IOCBN,f          ; Clear f
+0327 1415       BSF    IOCBN,IOCBN0     ; Bit Set f
+0328 0196       CLRF   IOCBF,f          ; Clear f
+0329 0020       MOVLB  0                ; Move literal to BSR
+032A 3020       MOVLW  0x20             ; Move literal to W
+032B 0084       MOVWF  FSR0L            ; Move W to f
+032C 0185       CLRF   FSR0H,f          ; Clear f
+032D 0189       CLRF   WREG,f           ; Clear f
+032E 001A L32E  MOVWI  INDF0++          ; Move W to INDF0, post inc
+032F 1F84       BTFSS  FSR0L,7          ; Bit Test f, Skip if Set
+0330 33FD       BRA    L32E             ; Relative Branch to -3
+0331 3079       MOVLW  0x79             ; Move literal to W
+0332 00EE       MOVWF  PORTC            ; Move W to f
+0333 3000       MOVLW  0                ; Move literal to W
+0334 00EF       MOVWF  0x6F             ; Move W to f
+0335 3004       MOVLW  4                ; Move literal to W
+0336 0098       MOVWF  T1CON            ; Move W to f
+0337 3008       MOVLW  8                ; Move literal to W
+0338 0025       MOVLB  5                ; Move literal to BSR
+0339 0093       MOVWF  CCP1CON          ; Move W to f
+033A 009A       MOVWF  CCP2CON          ; Move W to f
+033B 0026       MOVLB  6                ; Move literal to BSR
+033C 0093       MOVWF  CCP3CON          ; Move W to f
+033D 0028       MOVLB  8                ; Move literal to BSR
+033E 307C       MOVLW  0x7C             ; Move literal to W
+033F 009D       MOVWF  PR6              ; Move W to f
+0340 0026       MOVLB  6                ; Move literal to BSR
+0341 303C       MOVLW  0x3C             ; Move literal to W
+0342 009E       MOVWF  CCP5CON          ; Move W to f
+0343 303E       MOVLW  0x3E             ; Move literal to W
+0344 009C       MOVWF  CCPR5L           ; Move W to f
+0345 0025       MOVLB  5                ; Move literal to BSR
+0346 3002       MOVLW  2                ; Move literal to W
+0347 009F       MOVWF  CCPTMRS1         ; Move W to f
+0348 0028       MOVLB  8                ; Move literal to BSR
+0349 3007       MOVLW  7                ; Move literal to W
+034A 009E       MOVWF  T6CON            ; Move W to f
+034B 0020       MOVLB  0                ; Move literal to BSR
+034C 30FF       MOVLW  0xFF             ; Move literal to W
+034D 00DD       MOVWF  0x5D             ; Move W to f
+034E 00DC       MOVWF  T2CON            ; Move W to f
+034F 0023       MOVLB  3                ; Move literal to BSR
+0350 3080       MOVLW  0x80             ; Move literal to W
+0351 009D       MOVWF  RCSTA            ; Move W to f
+0352 019C       CLRF   SP1BRGH,f        ; Clear f
+0353 3044       MOVLW  0x44             ; Move literal to W
+0354 009B       MOVWF  SP1BRGL          ; Move W to f
+0355 3027       MOVLW  0x27             ; Move literal to W
+0356 009E       MOVWF  TXSTA            ; Move W to f
+0357 3048       MOVLW  0x48             ; Move literal to W
+0358 009F       MOVWF  BAUDCON          ; Move W to f
+0359 161D       BSF    RCSTA,CREN       ; Bit Set f
+035A 0819       MOVF   RCREG,w          ; Move f
+035B 0819       MOVF   RCREG,w          ; Move f
+035C 0020       MOVLB  0                ; Move literal to BSR
+035D 1291       BCF    PIR1,RCIF        ; Bit Clear f
+035E 0022       MOVLB  2                ; Move literal to BSR
+035F 30B6       MOVLW  0xB6             ; Move literal to W
+0360 0093       MOVWF  CM2CON0          ; Move W to f
+0361 30D1       MOVLW  0xD1             ; Move literal to W
+0362 0094       MOVWF  CM2CON1          ; Move W to f
+0363 0020       MOVLB  0                ; Move literal to BSR
+0364 0022       MOVLB  2                ; Move literal to BSR
+0365 30A8       MOVLW  0xA8             ; Move literal to W
+0366 0098       MOVWF  DACCON0          ; Move W to f
+0367 3017       MOVLW  0x17             ; Move literal to W
+0368 0099       MOVWF  DACCON1          ; Move W to f
+0369 0020       MOVLB  0                ; Move literal to BSR
+036A 00EC       MOVWF  PORTA            ; Move W to f
+036B 0022       MOVLB  2                ; Move literal to BSR
+036C 308F       MOVLW  0x8F             ; Move literal to W
+036D 0097       MOVWF  FVRCON           ; Move W to f
+036E 0020       MOVLB  0                ; Move literal to BSR
+036F 0021       MOVLB  1                ; Move literal to BSR
+0370 3063       MOVLW  0x63             ; Move literal to W
+0371 009E       MOVWF  ADCON1           ; Move W to f
+0372 0020       MOVLB  0                ; Move literal to BSR
+0373 0028       MOVLB  8                ; Move literal to BSR
+0374 307D       MOVLW  0x7D             ; Move literal to W
+0375 0096       MOVWF  PR4              ; Move W to f
+0376 3006       MOVLW  6                ; Move literal to W
+0377 0097       MOVWF  T4CON            ; Move W to f
+0378 0195       CLRF   TMR4,f           ; Clear f
+0379 0021       MOVLB  1                ; Move literal to BSR
+037A 1093       BCF    PIE3,TMR4IE      ; Bit Clear f
+037B 0020       MOVLB  0                ; Move literal to BSR
+037C 30A0       MOVLW  0xA0             ; Move literal to W
+037D 00F0       MOVWF  PORTE            ; Move W to f
+037E 00F2       MOVWF  PIR2             ; Move W to f
+037F 00F4       MOVWF  0x74             ; Move W to f
+0380 30A0       MOVLW  0xA0             ; Move literal to W
+0381 00F8       MOVWF  T1CON            ; Move W to f
+0382 3000       MOVLW  0                ; Move literal to W
+0383 00F1       MOVWF  PIR1             ; Move W to f
+0384 00F3       MOVWF  PIR3             ; Move W to f
+0385 00F5       MOVWF  TMR0             ; Move W to f
+0386 3000       MOVLW  0                ; Move literal to W
+0387 00F9       MOVWF  T1GCON           ; Move W to f
+0388 3028       MOVLW  0x28             ; Move literal to W
+0389 00F6       MOVWF  TMR1L            ; Move W to f
+038A 01F7       CLRF   TMR1H,f          ; Clear f
+038B 3060       MOVLW  0x60             ; Move literal to W
+038C 00FA       MOVWF  TMR2             ; Move W to f
+038D 3064       MOVLW  0x64             ; Move literal to W
+038E 00FB       MOVWF  PR2              ; Move W to f
+038F 00D8       MOVWF  T1CON            ; Move W to f
+0390 30FF       MOVLW  0xFF             ; Move literal to W
+0391 00FE       MOVWF  CPSCON0          ; Move W to f
+0392 30AF       MOVLW  0xAF             ; Move literal to W
+0393 00FD       MOVWF  0x7D             ; Move W to f
+0394 0021       MOVLB  1                ; Move literal to BSR
+0395 1712       BSF    PIE2,C2IE        ; Bit Set f
+0396 0020       MOVLB  0                ; Move literal to BSR
+0397 30D8       MOVLW  0xD8             ; Move literal to W
+0398 008B       MOVWF  INTCON           ; Move W to f
+0399 2C00       GOTO   L400             ; Go to address
+0400 0064 L400  CLRWDT                  ; Clear Watchdog Timer
+0401 0021       MOVLB  1                ; Move literal to BSR
+0402 1BFA       BTFSC  OSCSTAT,T1OSCR   ; Bit Test f, Skip if Clear
+0403 158E       BSF    TRISC,TRISC3     ; Bit Set f
+0404 1FFA       BTFSS  OSCSTAT,T1OSCR   ; Bit Test f, Skip if Set
+0405 118E       BCF    TRISC,TRISC3     ; Bit Clear f
+0406 0020       MOVLB  0                ; Move literal to BSR
+0407 1FFC       BTFSS  T2CON,7          ; Bit Test f, Skip if Set
+0408 3203       BRA    L40C             ; Relative Branch to 3
+0409 13FC       BCF    T2CON,7          ; Bit Clear f
+040A 01D9       CLRF   T1GCON,f         ; Clear f
+040B 01DA       CLRF   TMR2,f           ; Clear f
+040C 1E91 L40C  BTFSS  PIR1,RCIF        ; Bit Test f, Skip if Set
+040D 3211       BRA    L41F             ; Relative Branch to 17
+040E 1291       BCF    PIR1,RCIF        ; Bit Clear f
+040F 0023       MOVLB  3                ; Move literal to BSR
+0410 191D       BTFSC  RCSTA,FERR       ; Bit Test f, Skip if Clear
+0411 3207       BRA    L419             ; Relative Branch to 7
+0412 189D       BTFSC  RCSTA,OERR       ; Bit Test f, Skip if Clear
+0413 3208       BRA    L41C             ; Relative Branch to 8
+0414 0819       MOVF   RCREG,w          ; Move f
+0415 0020       MOVLB  0                ; Move literal to BSR
+0416 00E1       MOVWF  INDF1            ; Move W to f
+0417 2700       CALL   L700             ; Call Subroutine
+0418 3206       BRA    L41F             ; Relative Branch to 6
+0419 0819 L419  MOVF   T1GCON,w         ; Move f
+041A 0020       MOVLB  0                ; Move literal to BSR
+041B 3203       BRA    L41F             ; Relative Branch to 3
+041C 121D L41C  BCF    0x1D,4           ; Bit Clear f
+041D 161D       BSF    0x1D,4           ; Bit Set f
+041E 0020       MOVLB  0                ; Move literal to BSR
+041F 1C93 L41F  BTFSS  PIR3,TMR4IF      ; Bit Test f, Skip if Set
+0420 3263       BRA    L484             ; Relative Branch to 99
+0421 1093       BCF    PIR3,TMR4IF      ; Bit Clear f
+0422 2489       CALL   L489             ; Call Subroutine
+0423 0BD6       DECFSZ TMR1L,f          ; Decrement f, Skip if 0
+0424 325F       BRA    L484             ; Relative Branch to 95
+0425 3004       MOVLW  4                ; Move literal to W
+0426 00D6       MOVWF  TMR1L            ; Move W to f
+0427 1455       BSF    TMR0,0           ; Bit Set f
+0428 08DD       MOVF   0x5D,f           ; Move f
+0429 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+042A 3203       BRA    L42E             ; Relative Branch to 3
+042B 0BDD       DECFSZ 0x5D,f           ; Decrement f, Skip if 0
+042C 3201       BRA    L42E             ; Relative Branch to 1
+042D 2726       CALL   L726             ; Call Subroutine
+042E 08E9 L42E  MOVF   WREG,f           ; Move f
+042F 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0430 03E9       DECF   WREG,f           ; Decrement f
+0431 0BD0       DECFSZ PORTE,f          ; Decrement f, Skip if 0
+0432 3217       BRA    L44A             ; Relative Branch to 23
+0433 300A       MOVLW  0x0A             ; Move literal to W
+0434 00D0       MOVWF  PORTE            ; Move W to f
+0435 14D5       BSF    TMR0,1           ; Bit Set f
+0436 0BD1       DECFSZ PIR1,f           ; Decrement f, Skip if 0
+0437 3203       BRA    L43B             ; Relative Branch to 3
+0438 3005       MOVLW  5                ; Move literal to W
+0439 00D1       MOVWF  PIR1             ; Move W to f
+043A 1555       BSF    TMR0,2           ; Bit Set f
+043B 0BD2 L43B  DECFSZ PIR2,f           ; Decrement f, Skip if 0
+043C 320D       BRA    L44A             ; Relative Branch to 13
+043D 300A       MOVLW  0x0A             ; Move literal to W
+043E 00D2       MOVWF  PIR2             ; Move W to f
+043F 15D5       BSF    TMR0,3           ; Bit Set f
+0440 0BD3       DECFSZ PIR3,f           ; Decrement f, Skip if 0
+0441 3208       BRA    L44A             ; Relative Branch to 8
+0442 300A       MOVLW  0x0A             ; Move literal to W
+0443 00D3       MOVWF  PIR3             ; Move W to f
+0444 1655       BSF    TMR0,4           ; Bit Set f
+0445 0BD4       DECFSZ 0x54,f           ; Decrement f, Skip if 0
+0446 3203       BRA    L44A             ; Relative Branch to 3
+0447 300A       MOVLW  0x0A             ; Move literal to W
+0448 00D4       MOVWF  0x54             ; Move W to f
+0449 16D5       BSF    TMR0,5           ; Bit Set f
+044A 1C55 L44A  BTFSS  TMR0,0           ; Bit Test f, Skip if Set
+044B 3214       BRA    L460             ; Relative Branch to 20
+044C 08D8       MOVF   T1CON,f          ; Move f
+044D 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+044E 3210       BRA    L45F             ; Relative Branch to 16
+044F 0BD8       DECFSZ T1CON,f          ; Decrement f, Skip if 0
+0450 320E       BRA    L45F             ; Relative Branch to 14
+0451 08DB       MOVF   PR2,f            ; Move f
+0452 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0453 3206       BRA    L45A             ; Relative Branch to 6
+0454 1F7A       BTFSS  TMR2,6           ; Bit Test f, Skip if Set
+0455 3209       BRA    L45F             ; Relative Branch to 9
+0456 01DB       CLRF   PR2,f            ; Clear f
+0457 3003       MOVLW  3                ; Move literal to W
+0458 1DFA       BTFSS  TMR2,3           ; Bit Test f, Skip if Set
+0459 00DB       MOVWF  PR2              ; Move W to f
+045A 087B L45A  MOVF   PR2,w            ; Move f
+045B 00D8       MOVWF  T1CON            ; Move W to f
+045C 2299       CALL   L299             ; Call Subroutine
+045D 22AA       CALL   L2AA             ; Call Subroutine
+045E 3200       BRA    L45F             ; Relative Branch to 0
+045F 1055 L45F  BCF    TMR0,0           ; Bit Clear f
+0460 1CD5 L460  BTFSS  TMR0,1           ; Bit Test f, Skip if Set
+0461 3201       BRA    L463             ; Relative Branch to 1
+0462 10D5       BCF    TMR0,1           ; Bit Clear f
+0463 1D55 L463  BTFSS  TMR0,2           ; Bit Test f, Skip if Set
+0464 3201       BRA    L466             ; Relative Branch to 1
+0465 1155       BCF    TMR0,2           ; Bit Clear f
+0466 1DD5 L466  BTFSS  TMR0,3           ; Bit Test f, Skip if Set
+0467 3204       BRA    L46C             ; Relative Branch to 4
+0468 1A0D       BTFSC  PORTB,RB4        ; Bit Test f, Skip if Clear
+0469 15FA       BSF    TMR2,3           ; Bit Set f
+046A 2726       CALL   L726             ; Call Subroutine
+046B 11D5       BCF    TMR0,3           ; Bit Clear f
+046C 1E55 L46C  BTFSS  TMR0,4           ; Bit Test f, Skip if Set
+046D 3213       BRA    L481             ; Relative Branch to 19
+046E 03EC       DECF   PORTA,f          ; Decrement f
+046F 3006       MOVLW  6                ; Move literal to W
+0470 026C       SUBWF  PORTA,w          ; Subtract W from f
+0471 1C03       BTFSS  STATUS,C         ; Bit Test f, Skip if Set
+0472 0AEC       INCF   PORTA,f          ; Increment f
+0473 1F7A       BTFSS  TMR2,6           ; Bit Test f, Skip if Set
+0474 320B       BRA    L480             ; Relative Branch to 11
+0475 08D8       MOVF   T1CON,f          ; Move f
+0476 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0477 3208       BRA    L480             ; Relative Branch to 8
+0478 01DB       CLRF   PR2,f            ; Clear f
+0479 3003       MOVLW  3                ; Move literal to W
+047A 1DFA       BTFSS  TMR2,3           ; Bit Test f, Skip if Set
+047B 00DB       MOVWF  PR2              ; Move W to f
+047C 087B       MOVF   PR2,w            ; Move f
+047D 00D8       MOVWF  T1CON            ; Move W to f
+047E 2299       CALL   L299             ; Call Subroutine
+047F 22AA       CALL   L2AA             ; Call Subroutine
+0480 1255 L480  BCF    TMR0,4           ; Bit Clear f
+0481 1ED5 L481  BTFSS  TMR0,5           ; Bit Test f, Skip if Set
+0482 3201       BRA    L484             ; Relative Branch to 1
+0483 12D5       BCF    TMR0,5           ; Bit Clear f
+0484 1818 L484  BTFSC  T1CON,TMR1ON     ; Bit Test f, Skip if Clear
+0485 3202       BRA    L488             ; Relative Branch to 2
+0486 2500       CALL   L500             ; Call Subroutine
+0487 2600       CALL   L600             ; Call Subroutine
+0488 2C00 L488  GOTO   L400             ; Go to address
+0489 3004 L489  MOVLW  4                ; Move literal to W
+048A 008A       MOVWF  PCLATH           ; Move W to f
+048B 086B       MOVF   INTCON,w         ; Move f
+048C 0782       ADDRWF PCL,f            ; Add W and f
+048D 2C90       GOTO   L490             ; Go to address
+048E 2C96       GOTO   L496             ; Go to address
+048F 2C9B       GOTO   L49B             ; Go to address
+0490 0021 L490  MOVLB  1                ; Move literal to BSR
+0491 300D       MOVLW  0x0D             ; Move literal to W
+0492 009D       MOVWF  ADCON0           ; Move W to f
+0493 0020       MOVLB  0                ; Move literal to BSR
+0494 0AEB       INCF   INTCON,f         ; Increment f
+0495 0008       RETURN                  ; Return from Subroutine
+0496 0021 L496  MOVLB  1                ; Move literal to BSR
+0497 149D       BSF    ADCON0,ADGO      ; Bit Set f
+0498 0020       MOVLB  0                ; Move literal to BSR
+0499 0AEB       INCF   INTCON,f         ; Increment f
+049A 0008       RETURN                  ; Return from Subroutine
+049B 24AC L49B  CALL   L4AC             ; Call Subroutine
+049C 0C6A       RRF    PCLATH,w         ; Rotate Right f through Carry
+049D 0C09       RRF    WREG,w           ; Rotate Right f through Carry
+049E 0C09       RRF    WREG,w           ; Rotate Right f through Carry
+049F 391F       ANDLW  0x1F             ; AND literal with W
+04A0 00ED       MOVWF  PORTB            ; Move W to f
+04A1 026C       SUBWF  PORTA,w          ; Subtract W from f
+04A2 1803       BTFSC  STATUS,C         ; Bit Test f, Skip if Clear
+04A3 2CAA       GOTO   L4AA             ; Go to address
+04A4 086D       MOVF   PORTB,w          ; Move f
+04A5 00EC       MOVWF  PORTA            ; Move W to f
+04A6 036C       DECF   PORTA,w          ; Decrement f
+04A7 0022       MOVLB  2                ; Move literal to BSR
+04A8 0099       MOVWF  DACCON1          ; Move W to f
+04A9 0020       MOVLB  0                ; Move literal to BSR
+04AA 01EB L4AA  CLRF   INTCON,f         ; Clear f
+04AB 0008       RETURN                  ; Return from Subroutine
+04AC 0021 L4AC  MOVLB  1                ; Move literal to BSR
+04AD 081C       MOVF   ADRESH,w         ; Move f
+04AE 0020       MOVLB  0                ; Move literal to BSR
+04AF 066A       XORWF  PCLATH,w         ; Exclusive OR literal with W
+04B0 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+04B1 2CC7       GOTO   L4C7             ; Go to address
+04B2 0A6A       INCF   PCLATH,w         ; Increment f
+04B3 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+04B4 2CBA       GOTO   L4BA             ; Go to address
+04B5 0021       MOVLB  1                ; Move literal to BSR
+04B6 061C       XORWF  ADRESH,w         ; Exclusive OR literal with W
+04B7 0020       MOVLB  0                ; Move literal to BSR
+04B8 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+04B9 2CC7       GOTO   L4C7             ; Go to address
+04BA 086A L4BA  MOVF   PCLATH,w         ; Move f
+04BB 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+04BC 2CC3       GOTO   L4C3             ; Go to address
+04BD 036A       DECF   PCLATH,w         ; Decrement f
+04BE 0021       MOVLB  1                ; Move literal to BSR
+04BF 061C       XORWF  ADRESH,w         ; Exclusive OR literal with W
+04C0 0020       MOVLB  0                ; Move literal to BSR
+04C1 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+04C2 2CC7       GOTO   L4C7             ; Go to address
+04C3 0021 L4C3  MOVLB  1                ; Move literal to BSR
+04C4 081C       MOVF   ADRESH,w         ; Move f
+04C5 0020       MOVLB  0                ; Move literal to BSR
+04C6 00EA       MOVWF  PCLATH           ; Move W to f
+04C7 0008 L4C7  RETURN                  ; Return from Subroutine
+0500 1CE0 L500  BTFSS  INDF0,1          ; Bit Test f, Skip if Set
+0501 32AC       BRA    L5AE             ; Relative Branch to 172
+0502 10E0       BCF    INDF0,1          ; Bit Clear f
+0503 08E6       MOVF   FSR1L,f          ; Move f
+0504 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0505 32A8       BRA    L5AE             ; Relative Branch to 168
+0506 30F8       MOVLW  0xF8             ; Move literal to W
+0507 0520       ANDWF  INDF0,w          ; AND W with f
+0508 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0509 32A4       BRA    L5AE             ; Relative Branch to 164
+050A 0821       MOVF   INDF1,w          ; Move f
+050B 00E5       MOVWF  FSR0H            ; Move W to f
+050C 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+050D 32A0       BRA    L5AE             ; Relative Branch to 160
+050E 0822       MOVF   PCL,w            ; Move f
+050F 0084       MOVWF  FSR0L            ; Move W to f
+0510 0823       MOVF   STATUS,w         ; Move f
+0511 0085       MOVWF  FSR0H            ; Move W to f
+0512 0820       MOVF   INDF0,w          ; Move f
+0513 000B       BRW                     ; Relative Branch with W
+0514 3207       BRA    L51C             ; Relative Branch to 7
+0515 3239       BRA    L54F             ; Relative Branch to 57
+0516 326D       BRA    L584             ; Relative Branch to 109
+0517 3296       BRA    L5AE             ; Relative Branch to 150
+0518 3295       BRA    L5AE             ; Relative Branch to 149
+0519 3235       BRA    L54F             ; Relative Branch to 53
+051A 3293       BRA    L5AE             ; Relative Branch to 147
+051B 3292       BRA    L5AE             ; Relative Branch to 146
+051C 3002 L51C  MOVLW  2                ; Move literal to W
+051D 0087       MOVWF  FSR1H            ; Move W to f
+051E 30A0       MOVLW  0xA0             ; Move literal to W
+051F 0086       MOVWF  FSR1L            ; Move W to f
+0520 300F       MOVLW  0x0F             ; Move literal to W
+0521 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0522 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0523 01E6       CLRF   FSR1L,f          ; Clear f
+0524 3000       MOVLW  0                ; Move literal to W
+0525 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0526 0865       MOVF   FSR0H,w          ; Move f
+0527 253D       CALL   L53D             ; Call Subroutine
+0528 0822       MOVF   PCL,w            ; Move f
+0529 253D       CALL   L53D             ; Call Subroutine
+052A 0823       MOVF   STATUS,w         ; Move f
+052B 253D       CALL   L53D             ; Call Subroutine
+052C 138B       BCF    INTCON,GIE       ; Bit Clear f
+052D 0012 L52D  MOVIW  INDF0++          ; Move INDF0 to W, post inc
+052E 253D       CALL   L53D             ; Call Subroutine
+052F 0BE5       DECFSZ FSR0H,f          ; Decrement f, Skip if 0
+0530 33FC       BRA    L52D             ; Relative Branch to -4
+0531 178B       BSF    INTCON,GIE       ; Bit Set f
+0532 0966 L532  COMF   FSR1L,w          ; Complement f
+0533 3E01       ADDLW  1                ; Add literal and W
+0534 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0535 3004       MOVLW  4                ; Move literal to W
+0536 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0537 30A0       MOVLW  0xA0             ; Move literal to W
+0538 0206       SUBWF  FSR1L,w          ; Subtract W from f
+0539 00E5       MOVWF  FSR0H            ; Move W to f
+053A 30A0       MOVLW  0xA0             ; Move literal to W
+053B 00E4       MOVWF  FSR0L            ; Move W to f
+053C 3271       BRA    L5AE             ; Relative Branch to 113
+053D 00E2 L53D  MOVWF  PCL              ; Move W to f
+053E 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+053F 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0540 3208       BRA    L549             ; Relative Branch to 8
+0541 0862       MOVF   PCL,w            ; Move f
+0542 3A04       XORLW  4                ; Exclusive OR literal with W
+0543 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0544 3204       BRA    L549             ; Relative Branch to 4
+0545 0862       MOVF   PCL,w            ; Move f
+0546 3A05       XORLW  5                ; Exclusive OR literal with W
+0547 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0548 3202       BRA    L54B             ; Relative Branch to 2
+0549 3005 L549  MOVLW  5                ; Move literal to W
+054A 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+054B 0862 L54B  MOVF   PCL,w            ; Move f
+054C 07E6       ADDRWF FSR1L,f          ; Add W and f
+054D 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+054E 0008       RETURN                  ; Return from Subroutine
+054F 3024 L54F  MOVLW  0x24             ; Move literal to W
+0550 0086       MOVWF  FSR1L            ; Move W to f
+0551 0187       CLRF   FSR1H,f          ; Clear f
+0552 138B       BCF    INTCON,GIE       ; Bit Clear f
+0553 0016 L553  MOVIW  INDF1++          ; Move INDF1 to W, post inc
+0554 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0555 0BE5       DECFSZ FSR0H,f          ; Decrement f, Skip if 0
+0556 33FC       BRA    L553             ; Relative Branch to -4
+0557 178B       BSF    INTCON,GIE       ; Bit Set f
+0558 0320       DECF   INDF0,w          ; Decrement f
+0559 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+055A 3217       BRA    L572             ; Relative Branch to 23
+055B 3002       MOVLW  2                ; Move literal to W
+055C 0087       MOVWF  FSR1H            ; Move W to f
+055D 30A0       MOVLW  0xA0             ; Move literal to W
+055E 0086       MOVWF  FSR1L            ; Move W to f
+055F 300F       MOVLW  0x0F             ; Move literal to W
+0560 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0561 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0562 3005       MOVLW  5                ; Move literal to W
+0563 253D       CALL   L53D             ; Call Subroutine
+0564 3003       MOVLW  3                ; Move literal to W
+0565 253D       CALL   L53D             ; Call Subroutine
+0566 3060       MOVLW  0x60             ; Move literal to W
+0567 253D       CALL   L53D             ; Call Subroutine
+0568 3000       MOVLW  0                ; Move literal to W
+0569 253D       CALL   L53D             ; Call Subroutine
+056A 0860       MOVF   INDF0,w          ; Move f
+056B 1360       BCF    INDF0,6          ; Bit Clear f
+056C 253D       CALL   L53D             ; Call Subroutine
+056D 0859       MOVF   T1GCON,w         ; Move f
+056E 253D       CALL   L53D             ; Call Subroutine
+056F 085A       MOVF   TMR2,w           ; Move f
+0570 253D       CALL   L53D             ; Call Subroutine
+0571 33C0       BRA    L532             ; Relative Branch to -64
+0572 30A0 L572  MOVLW  0xA0             ; Move literal to W
+0573 0084       MOVWF  FSR0L            ; Move W to f
+0574 3002       MOVLW  2                ; Move literal to W
+0575 0085       MOVWF  FSR0H            ; Move W to f
+0576 300F       MOVLW  0x0F             ; Move literal to W
+0577 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0578 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0579 3001       MOVLW  1                ; Move literal to W
+057A 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+057B 30FF       MOVLW  0xFF             ; Move literal to W
+057C 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+057D 3004       MOVLW  4                ; Move literal to W
+057E 0080       MOVWF  INDF0            ; Move W to f
+057F 3005       MOVLW  5                ; Move literal to W
+0580 00E5       MOVWF  FSR0H            ; Move W to f
+0581 30A0       MOVLW  0xA0             ; Move literal to W
+0582 00E4       MOVWF  FSR0L            ; Move W to f
+0583 322A       BRA    L5AE             ; Relative Branch to 42
+0584 138B L584  BCF    INTCON,GIE       ; Bit Clear f
+0585 3095       MOVLW  0x95             ; Move literal to W
+0586 0604       XORWF  FSR0L,w          ; Exclusive OR literal with W
+0587 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0588 320B       BRA    L594             ; Relative Branch to 11
+0589 08A5       MOVF   FSR0H,f          ; Move f
+058A 0027       MOVLB  7                ; Move literal to BSR
+058B 1014       BCF    IOCBP,IOCBP0     ; Bit Clear f
+058C 1015       BCF    IOCBN,IOCBN0     ; Bit Clear f
+058D 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+058E 3203       BRA    L592             ; Relative Branch to 3
+058F 1414       BSF    IOCBP,IOCBP0     ; Bit Set f
+0590 0196       CLRF   IOCBF,f          ; Clear f
+0591 3202       BRA    L594             ; Relative Branch to 2
+0592 1415 L592  BSF    IOCBN,IOCBN0     ; Bit Set f
+0593 0196       CLRF   IOCBF,f          ; Clear f
+0594 0020 L594  MOVLB  0                ; Move literal to BSR
+0595 0800       MOVF   INDF0,w          ; Move f
+0596 0524       ANDWF  FSR0L,w          ; AND W with f
+0597 0425       XORWF  FSR0H,w          ; Exclusive OR W with f
+0598 0080       MOVWF  INDF0            ; Move W to f
+0599 178B       BSF    INTCON,GIE       ; Bit Set f
+059A 3002       MOVLW  2                ; Move literal to W
+059B 0087       MOVWF  FSR1H            ; Move W to f
+059C 30A0       MOVLW  0xA0             ; Move literal to W
+059D 0086       MOVWF  FSR1L            ; Move W to f
+059E 300F       MOVLW  0x0F             ; Move literal to W
+059F 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A0 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A1 3002       MOVLW  2                ; Move literal to W
+05A2 00E6       MOVWF  FSR1L            ; Move W to f
+05A3 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A4 3001       MOVLW  1                ; Move literal to W
+05A5 07E6       ADDRWF FSR1L,f          ; Add W and f
+05A6 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A7 0822       MOVF   PCL,w            ; Move f
+05A8 253D       CALL   L53D             ; Call Subroutine
+05A9 0823       MOVF   STATUS,w         ; Move f
+05AA 253D       CALL   L53D             ; Call Subroutine
+05AB 0800       MOVF   INDF0,w          ; Move f
+05AC 253D       CALL   L53D             ; Call Subroutine
+05AD 3384       BRA    L532             ; Relative Branch to -124
+05AE 0008 L5AE  RETURN                  ; Return from Subroutine
+0600 08E4 L600  MOVF   FSR0L,f          ; Move f
+0601 1903       BTFSC  STATUS,Z         ; Bit Test f, Skip if Clear
+0602 3210       BRA    L613             ; Relative Branch to 16
+0603 0023       MOVLB  3                ; Move literal to BSR
+0604 1C9E       BTFSS  TXSTA,TRMT       ; Bit Test f, Skip if Set
+0605 320D       BRA    L613             ; Relative Branch to 13
+0606 0020       MOVLB  0                ; Move literal to BSR
+0607 0864       MOVF   FSR0L,w          ; Move f
+0608 0086       MOVWF  FSR1L            ; Move W to f
+0609 3002       MOVLW  2                ; Move literal to W
+060A 0087       MOVWF  FSR1H            ; Move W to f
+060B 0801       MOVF   INDF1,w          ; Move f
+060C 0023       MOVLB  3                ; Move literal to BSR
+060D 009A       MOVWF  TXREG            ; Move W to f
+060E 0020       MOVLB  0                ; Move literal to BSR
+060F 0AE4       INCF   FSR0L,f          ; Increment f
+0610 0BE5       DECFSZ FSR0H,f          ; Decrement f, Skip if 0
+0611 3201       BRA    L613             ; Relative Branch to 1
+0612 01E4       CLRF   FSR0L,f          ; Clear f
+0613 0020 L613  MOVLB  0                ; Move literal to BSR
+0614 0008       RETURN                  ; Return from Subroutine
+0700 0861 L700  MOVF   INDF1,w          ; Move f
+0701 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0702 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0703 3212       BRA    L716             ; Relative Branch to 18
+0704 1860       BTFSC  INDF0,0          ; Bit Test f, Skip if Clear
+0705 3204       BRA    L70A             ; Relative Branch to 4
+0706 3020       MOVLW  0x20             ; Move literal to W
+0707 00E3       MOVWF  STATUS           ; Move W to f
+0708 01E6       CLRF   FSR1L,f          ; Clear f
+0709 0008       RETURN                  ; Return from Subroutine
+070A 1060 L70A  BCF    INDF0,0          ; Bit Clear f
+070B 0863       MOVF   STATUS,w         ; Move f
+070C 0084       MOVWF  FSR0L            ; Move W to f
+070D 0185       CLRF   FSR0H,f          ; Clear f
+070E 0861       MOVF   INDF1,w          ; Move f
+070F 0080       MOVWF  INDF0            ; Move W to f
+0710 07E6       ADDRWF FSR1L,f          ; Add W and f
+0711 0AE3       INCF   STATUS,f         ; Increment f
+0712 1F63       BTFSS  STATUS,6         ; Bit Test f, Skip if Set
+0713 0008       RETURN                  ; Return from Subroutine
+0714 03E3       DECF   STATUS,f         ; Decrement f
+0715 0008       RETURN                  ; Return from Subroutine
+0716 0861 L716  MOVF   INDF1,w          ; Move f
+0717 3A04       XORLW  4                ; Exclusive OR literal with W
+0718 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0719 3204       BRA    L71E             ; Relative Branch to 4
+071A 1860       BTFSC  INDF0,0          ; Bit Test f, Skip if Clear
+071B 33EE       BRA    L70A             ; Relative Branch to -18
+071C 14E0       BSF    INDF0,1          ; Bit Set f
+071D 0008       RETURN                  ; Return from Subroutine
+071E 0861 L71E  MOVF   INDF1,w          ; Move f
+071F 3A05       XORLW  5                ; Exclusive OR literal with W
+0720 1D03       BTFSS  STATUS,Z         ; Bit Test f, Skip if Set
+0721 33E8       BRA    L70A             ; Relative Branch to -24
+0722 1860       BTFSC  INDF0,0          ; Bit Test f, Skip if Clear
+0723 33E6       BRA    L70A             ; Relative Branch to -26
+0724 1460       BSF    INDF0,0          ; Bit Set f
+0725 0008       RETURN                  ; Return from Subroutine
+0726 0026 L726  MOVLB  6                ; Move literal to BSR
+0727 30F0       MOVLW  0xF0             ; Move literal to W
+0728 059E       ANDWF  CCP5CON,f        ; AND W with f
+0729 0020       MOVLB  0                ; Move literal to BSR
+072A 0008       RETURN                  ; Return from Subroutine
+072B 0026 L72B  MOVLB  6                ; Move literal to BSR
+072C 300C       MOVLW  0x0C             ; Move literal to W
+072D 049E       XORWF  CCP5CON,f        ; Exclusive OR W with f
+072E 0020       MOVLB  0                ; Move literal to BSR
+072F 0008       RETURN                  ; Return from Subroutine
+0730 0008       RETURN                  ; Return from Subroutine
+8007 0F4C       INCFSZ PORTA,w          ; Increment f, Skip if 0
+8008 1332       BCF    PIR2,C2IF        ; Bit Clear f

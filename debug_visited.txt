@@ -1,0 +1,1176 @@
+; Visited
+0000 0020       MOVLB  0                ; BSR=10
+0001 018A       CLRF   PCLATH,f         ; PCLATH = 0
+0002 018B       CLRF   INTCON,f         ; INTCON = 0
+0003 3201       BRA    L005             ; Relative Branch to 1
+0004 2A04       GOTO   L204             ; Go to address
+0005 0021 L005  MOVLB  1                ; BSR=15
+000A 018C       CLRF   TRISA,f          ; TRISA = 0
+000B 018D       CLRF   TRISB,f          ; TRISB = 0
+001C 138D       BCF    TRISB,TRISB7     ; TRISB(TRISB7) = 0
+001F 128E       BCF    TRISC,TRISC5     ; TRISC(TRISC5) = 0
+0020 170E       BSF    TRISC,TRISC6     ; TRISC(TRISC6) = 1
+0025 1E1A L025  BTFSS  OSCSTAT,HFIOFR   
+0026 33FE       BRA    L025             ; if !OSCSTAT(HFIOFR) goto L025
+0027 1C1A L027  BTFSS  OSCSTAT,HFIOFS   
+0028 33FE       BRA    L027             ; if !OSCSTAT(HFIOFS) goto L027
+0029 1F1A L029  BTFSS  OSCSTAT,PLLR     
+002A 33FE       BRA    L029             ; if !OSCSTAT(PLLR) goto L029
+002F 0195       CLRF   OPTION_REG,f     ; OPTION_REG = 0
+0030 1415       BSF    OPTION_REG,PS0   ; OPTION_REG(PS0) = 1
+0031 0A13       INCF   PIE3,w           ; Increment f
+0032 0020       MOVLB  0                ; BSR=3
+0033 1903       BTFSC  STATUS,Z         
+0034 3209       BRA    L03E             ; if STATUS(Z) goto L03E
+0035 1A0D       BTFSC  PORTB,RB4        
+0036 2A00       GOTO   L200             ; if PORTB(RB4) goto L200
+0037 0023       MOVLB  3                ; BSR=255
+003A 0192       CLRF   EEADRH,f         ; EEADRH = 0
+003B 0093       MOVWF  EEDATL           ; Move W to f
+003C 215F       CALL   L15F             ; Call Subroutine
+003D 0001       RESET                   ; Software device Reset
+003E 0021 L03E  MOVLB  1                ; BSR=14
+0041 0020       MOVLB  0                ; BSR=3
+0042 0023 L042  MOVLB  3                ; BSR=128
+0047 0021       MOVLB  1                ; BSR=14
+0048 130E       BCF    TRISC,TRISC6     ; TRISC(TRISC6) = 0
+0049 0021 L049  MOVLB  1                ; BSR=3
+004C 0023       MOVLB  3                ; BSR=29
+004D 121D       BCF    RCSTA,CREN       ; RCSTA(CREN) = 0
+004E 0020       MOVLB  0                ; BSR=14
+004F 1B8E L04F  BTFSC  PORTC,RC7        
+0050 33FE       BRA    L04F             ; if PORTC(RC7) goto L04F
+0051 1F8E L051  BTFSS  PORTC,RC7        
+0052 33FE       BRA    L051             ; if !PORTC(RC7) goto L051
+0053 0195       CLRF   TMR0,f           ; TMR0 = 0
+0054 1B8E L054  BTFSC  PORTC,RC7        
+0055 33FE       BRA    L054             ; if PORTC(RC7) goto L054
+0056 1F8E L056  BTFSS  PORTC,RC7        
+0057 33FE       BRA    L056             ; if !PORTC(RC7) goto L056
+005A 1003       BCF    STATUS,C         ; STATUS(C) = 0
+005B 0C73       RRF    PIR3,w           ; Rotate Right f through Carry
+005C 1C03       BTFSS  STATUS,C         ; if STATUS(C) then skip
+005D 3EFF       ADDLW  0xFF             ; Add literal and W
+005E 0023       MOVLB  3                ; BSR=34
+0061 019C       CLRF   SP1BRGH,f        ; SP1BRGH = 0
+0062 161D       BSF    RCSTA,CREN       ; RCSTA(CREN) = 1
+0063 0819       MOVF   RCREG,w          ; W=RCREG
+0064 0819       MOVF   RCREG,w          ; W=RCREG
+0065 0021       MOVLB  1                ; BSR=255
+0068 0023       MOVLB  3                ; BSR=29
+0069 189D       BTFSC  RCSTA,OERR       
+006A 33D7       BRA    L042             ; if RCSTA(OERR) goto L042
+006B 0020       MOVLB  0                ; BSR=17
+006C 1E91 L06C  BTFSS  PIR1,RCIF        
+006D 33FE       BRA    L06C             ; if !PIR1(RCIF) goto L06C
+006E 0023       MOVLB  3                ; BSR=25
+0071 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0072 1D03       BTFSS  STATUS,Z         
+0073 33D5       BRA    L049             ; if !STATUS(Z) goto L049
+0078 01F1       CLRF   EEADRL,f         ; EEADRL = 0
+0079 189D L079  BTFSC  RCSTA,OERR       
+007A 33C7       BRA    L042             ; if RCSTA(OERR) goto L042
+007B 0020       MOVLB  0                ; BSR=17
+007C 1E91 L07C  BTFSS  PIR1,RCIF        
+007D 33FE       BRA    L07C             ; if !PIR1(RCIF) goto L07C
+007E 0023       MOVLB  3                ; BSR=25
+0081 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0082 1903       BTFSC  STATUS,Z         
+0083 33C5       BRA    L049             ; if STATUS(Z) goto L049
+0084 0874       MOVF   EEDATH,w         ; W=EEDATH
+0085 3A04       XORLW  4                ; Exclusive OR literal with W
+0086 1903       BTFSC  STATUS,Z         
+0087 3211       BRA    L099             ; if STATUS(Z) goto L099
+0088 0874       MOVF   EEDATH,w         ; W=EEDATH
+0089 3A05       XORLW  5                ; Exclusive OR literal with W
+008A 1D03       BTFSS  STATUS,Z         
+008B 3209       BRA    L095             ; if !STATUS(Z) goto L095
+008C 0023       MOVLB  3                ; BSR=29
+008D 189D       BTFSC  RCSTA,OERR       
+008E 33B3       BRA    L042             ; if RCSTA(OERR) goto L042
+008F 0020       MOVLB  0                ; BSR=17
+0090 1E91 L090  BTFSS  PIR1,RCIF        
+0091 33FE       BRA    L090             ; if !PIR1(RCIF) goto L090
+0092 0023       MOVLB  3                ; BSR=25
+0095 0874 L095  MOVF   EEDATH,w         ; W=EEDATH
+0096 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0097 07F1       ADDRWF EEADRL,f         ; Add W and f
+0098 33E0       BRA    L079             ; Relative Branch to -32
+0099 08F1 L099  MOVF   EEADRL,f         ; W=EEADRL
+009A 1D03       BTFSS  STATUS,Z         
+009B 33AD       BRA    L049             ; if !STATUS(Z) goto L049
+009C 0022       MOVLB  2                ; BSR=64
+009D 3040       MOVLW  0x40             ; W=0x40
+009E 068C       XORWF  LATA,f           ; Exclusive OR literal with W
+00A3 3F41       MOVIW  1[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00A4 00F2       MOVWF  CM1CON1          ; Move W to f
+00A5 1903       BTFSC  STATUS,Z         ; if !STATUS(Z) then skip
+00A6 0001       RESET                   ; Software device Reset
+00A7 0023       MOVLB  3                ; BSR=2
+00A8 3F42       MOVIW  2[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00A9 0091       MOVWF  EEADRL           ; Move W to f
+00AA 3F43       MOVIW  3[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00AB 0092       MOVWF  EEADRH           ; Move W to f
+00AC 0020       MOVLB  0                ; BSR=32
+00AD 08A0       MOVF   INDF0,f          ; W=INDF0
+00AE 1903       BTFSC  STATUS,Z         
+00AF 3203       BRA    L0B3             ; if STATUS(Z) goto L0B3
+00B0 3EE0       ADDLW  0xE0             ; Add literal and W
+00B1 1803       BTFSC  STATUS,C         
+00B2 3396       BRA    L049             ; if STATUS(C) goto L049
+00B7 3F40       MOVIW  0[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00B8 3C07       SUBLW  7                ; Subtract W from literal
+00B9 1C03       BTFSS  STATUS,C         
+00BA 338E       BRA    L049             ; if !STATUS(C) goto L049
+00BB 3F40       MOVIW  0[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00BC 000B       BRW                     ; Relative Branch with W
+00BD 3207       BRA    L0C5             ; Relative Branch to 7
+00BE 320F       BRA    L0CE             ; Relative Branch to 15
+00BF 3223       BRA    L0E3             ; Relative Branch to 35
+00C0 324B       BRA    L10C             ; Relative Branch to 75
+00C1 3256       BRA    L118             ; Relative Branch to 86
+00C2 3261       BRA    L124             ; Relative Branch to 97
+00C3 3239       BRA    L0FD             ; Relative Branch to 57
+00C4 3245       BRA    L10A             ; Relative Branch to 69
+00C5 3000 L0C5  MOVLW  0                ; W=0
+00C6 3FC2       MOVWI  2[INDF1]         ; Move W to INDF2, Indexed Indirect.
+00C7 3001       MOVLW  1                ; W=1
+00C8 0023       MOVLB  3                ; BSR=27
+00C9 081B       MOVF   SP1BRGL,w        ; W=SP1BRGL
+00CA 0020       MOVLB  0                ; BSR=3
+00CB 3FC3       MOVWI  3[INDF1]         ; Move W to INDF3, Indexed Indirect.
+00CC 3004       MOVLW  4                ; W=4
+00CD 3260       BRA    L12E             ; Relative Branch to 96
+00CE 0023 L0CE  MOVLB  3                ; BSR=21
+00CF 1795       BSF    EECON1,EEPGD     ; EECON1(EEPGD) = 1
+00D0 1315       BCF    EECON1,CFGS      ; EECON1(CFGS) = 0
+00D1 1415       BSF    EECON1,RD        ; EECON1(RD) = 1
+00D2 0000       NOP                     ; No Operation
+00D3 0000       NOP                     ; No Operation
+00D4 0813       MOVF   EEDATL,w         ; W=EEDATL
+00D5 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+00D6 0814       MOVF   EEDATH,w         ; W=EEDATH
+00D7 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+00D8 0A91       INCF   EEADRL,f         ; Increment f
+00D9 1903       BTFSC  STATUS,Z         ; if !STATUS(Z) then skip
+00DA 0A92       INCF   EEADRH,f         ; Increment f
+00DB 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+00DC 33F1       BRA    L0CE             ; Relative Branch to -15
+00DD 0020 L0DD  MOVLB  0                ; BSR=3
+00DE 1003       BCF    STATUS,C         ; STATUS(C) = 0
+00DF 3F41       MOVIW  1[INDF1]         ; Move INDF1 to W, Indexed Indirect.
+00E0 0D89       RLF    WREG,f           ; Rotate Left f through Carry
+00E1 3E05       ADDLW  5                ; Add literal and W
+00E2 324B       BRA    L12E             ; Relative Branch to 75
+00E3 0023 L0E3  MOVLB  3                ; BSR=21
+00E4 1795 L0E4  BSF    EECON1,EEPGD     ; EECON1(EEPGD) = 1
+00E5 1315       BCF    EECON1,CFGS      ; EECON1(CFGS) = 0
+00E6 1515       BSF    EECON1,WREN      ; EECON1(WREN) = 1
+00E7 1695       BSF    EECON1,LWLO      ; EECON1(LWLO) = 1
+00E8 0012       MOVIW  INDF0++          ; Move INDF0 to W, post inc
+00E9 0093       MOVWF  EEDATL           ; Move W to f
+00EA 0012       MOVIW  INDF0++          ; Move INDF0 to W, post inc
+00EB 0094       MOVWF  EEDATH           ; Move W to f
+00EC 2157       CALL   L157             ; Call Subroutine
+00ED 0811       MOVF   EEADRL,w         ; W=EEADRL
+00EE 3A07       XORLW  7                ; Exclusive OR literal with W
+00EF 3907       ANDLW  7                ; AND literal with W
+00F0 1903       BTFSC  STATUS,Z         
+00F1 3204       BRA    L0F6             ; if STATUS(Z) goto L0F6
+00F2 0F91 L0F2  INCFSZ EEADRL,f         ; Increment f, Skip if 0
+00F3 33F0       BRA    L0E4             ; Relative Branch to -16
+00F4 0A92       INCF   EEADRH,f         ; Increment f
+00F5 33EE       BRA    L0E4             ; Relative Branch to -18
+00F6 1295 L0F6  BCF    EECON1,LWLO      ; EECON1(LWLO) = 0
+00F7 2157       CALL   L157             ; Call Subroutine
+00F8 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+00F9 33F8       BRA    L0F2             ; Relative Branch to -8
+00FA 1115       BCF    EECON1,WREN      ; EECON1(WREN) = 0
+00FB 0020       MOVLB  0                ; BSR=48
+00FC 3230       BRA    L12D             ; Relative Branch to 48
+00FD 0023 L0FD  MOVLB  3                ; BSR=21
+00FE 1715       BSF    EECON1,CFGS      ; EECON1(CFGS) = 1
+00FF 1415       BSF    EECON1,RD        ; EECON1(RD) = 1
+0100 0000       NOP                     ; No Operation
+0101 0000       NOP                     ; No Operation
+0102 0813       MOVF   EEDATL,w         ; W=EEDATL
+0103 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0104 0814       MOVF   EEDATH,w         ; W=EEDATH
+0105 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0106 0A91       INCF   EEADRL,f         ; Increment f
+0107 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+0108 33F4       BRA    L0FD             ; Relative Branch to -12
+0109 33D3       BRA    L0DD             ; Relative Branch to -45
+010A 0020 L10A  MOVLB  0                ; BSR=33
+010B 3221       BRA    L12D             ; Relative Branch to 33
+010C 0023 L10C  MOVLB  3                ; BSR=148
+010F 2157       CALL   L157             ; Call Subroutine
+0110 3020       MOVLW  0x20             ; W=0x20
+0111 0791       ADDRWF EEADRL,f         ; Add W and f
+0112 0189       CLRF   WREG,f           ; WREG = 0
+0113 3D92       SUBLW  0x92             ; Subtract W from literal
+0114 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+0115 33F6       BRA    L10C             ; Relative Branch to -10
+0116 0020       MOVLB  0                ; BSR=21
+0117 3215       BRA    L12D             ; Relative Branch to 21
+0118 0023 L118  MOVLB  3                ; BSR=21
+0119 0195       CLRF   EECON1,f         ; EECON1 = 0
+011A 1415       BSF    EECON1,RD        ; EECON1(RD) = 1
+011B 0813       MOVF   EEDATL,w         ; W=EEDATL
+011C 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+011D 0A91       INCF   EEADRL,f         ; Increment f
+011E 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+011F 33F8       BRA    L118             ; Relative Branch to -8
+0120 0020       MOVLB  0                ; BSR=1
+0121 0801       MOVF   INDF1,w          ; W=INDF1
+0122 3E05       ADDLW  5                ; Add literal and W
+0123 320A       BRA    L12E             ; Relative Branch to 10
+0124 0023 L124  MOVLB  3                ; BSR=2
+0125 0012       MOVIW  INDF0++          ; Move INDF0 to W, post inc
+0126 0093       MOVWF  EEDATL           ; Move W to f
+0127 215F       CALL   L15F             ; Call Subroutine
+0128 0A91       INCF   EEADRL,f         ; Increment f
+0129 0BF2       DECFSZ EEADRH,f         ; Decrement f, Skip if 0
+012A 33F9       BRA    L124             ; Relative Branch to -7
+012B 0020       MOVLB  0                ; BSR=0
+012C 3200       BRA    L12D             ; Relative Branch to 0
+012E 00F2 L12E  MOVWF  PIR2             ; PIR2=1 (CCP2IF)
+012F 300F       MOVLW  0x0F             ; W=0x0F
+0130 2151       CALL   L151             ; Call Subroutine
+0131 2151       CALL   L151             ; Call Subroutine
+0132 01F1       CLRF   PIR1,f           ; PIR1 = 0
+0137 0012 L137  MOVIW  INDF0++          ; Move INDF0 to W, post inc
+0138 07F1       ADDRWF PIR1,f           ; Add W and f
+0139 2142       CALL   L142             ; Call Subroutine
+013A 0BF2       DECFSZ PIR2,f           ; Decrement f, Skip if 0
+013B 33FB       BRA    L137             ; Relative Branch to -5
+013C 0971       COMF   PIR1,w           ; Complement f
+013D 3E01       ADDLW  1                ; Add literal and W
+013E 2142       CALL   L142             ; Call Subroutine
+013F 3004       MOVLW  4                ; W=4
+0140 2151       CALL   L151             ; Call Subroutine
+0141 2849       GOTO   L049             ; Go to address
+0142 00F5 L142  MOVWF  TMR0             ; Move W to f
+0143 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0144 1903       BTFSC  STATUS,Z         
+0145 3208       BRA    L14E             ; if STATUS(Z) goto L14E
+0146 0875       MOVF   TMR0,w           ; W=TMR0
+0147 3A04       XORLW  4                ; Exclusive OR literal with W
+0148 1903       BTFSC  STATUS,Z         
+0149 3204       BRA    L14E             ; if STATUS(Z) goto L14E
+014A 0875       MOVF   TMR0,w           ; W=TMR0
+014B 3A05       XORLW  5                ; Exclusive OR literal with W
+014C 1D03       BTFSS  STATUS,Z         
+014D 2950       GOTO   L150             ; if !STATUS(Z) goto L150
+014E 3005 L14E  MOVLW  5                ; W=5
+014F 2151       CALL   L151             ; Call Subroutine
+0150 0875 L150  MOVF   TMR0,w           ; W=TMR0
+0151 0023 L151  MOVLB  3                ; BSR=30
+0152 1C9E L152  BTFSS  TXSTA,TRMT       
+0153 33FE       BRA    L152             ; if !TXSTA(TRMT) goto L152
+0154 009A       MOVWF  TXREG            ; Move W to f
+0155 0020       MOVLB  0                ; BSR=-2147483648
+0156 0008       RETURN                  ; Return from Subroutine
+015B 1495       BSF    TMR0,1           ; TMR0(1) = 1
+015C 0000       NOP                     ; No Operation
+015D 0000       NOP                     ; No Operation
+015E 0008       RETURN                  ; Return from Subroutine
+0161 2157       CALL   L157             ; Call Subroutine
+0162 1895 L162  BTFSC  TMR0,1           
+0163 33FE       BRA    L162             ; if TMR0(1) goto L162
+0164 0008       RETURN                  ; Return from Subroutine
+0200 2B00 L200  GOTO   L300             ; Go to address
+0204 0020 L204  MOVLB  0                ; BSR=11
+0205 1C8B       BTFSS  INTCON,INTF      
+0206 3211       BRA    L218             ; if !INTCON(INTF) goto L218
+0207 108B       BCF    INTCON,INTF      ; INTCON(INTF) = 0
+0208 1760 L208  BSF    INDF0,6          ; INDF0(6) = 1
+0209 08E9       MOVF   WREG,f           ; W=WREG
+020A 1D03       BTFSS  STATUS,Z         
+020B 328C       BRA    L298             ; if !STATUS(Z) goto L298
+020C 1AE0       BTFSC  INDF0,5          
+020D 328A       BRA    L298             ; if INDF0(5) goto L298
+020E 16E0       BSF    INDF0,5          ; INDF0(5) = 1
+0211 1FDC       BTFSS  T2CON,7          
+0212 3204       BRA    L217             ; if !T2CON(7) goto L217
+0213 13DC       BCF    T2CON,7          ; T2CON(7) = 0
+0216 272B       CALL   L72B             ; Call Subroutine
+0217 321F L217  BRA    L237             ; Relative Branch to 31
+0218 1F12 L218  BTFSS  PIR2,C2IF        
+0219 320E       BRA    L228             ; if !PIR2(C2IF) goto L228
+021A 1312       BCF    PIR2,C2IF        ; PIR2(C2IF) = 0
+021B 0022       MOVLB  2                ; BSR=19
+021C 1F13       BTFSS  CM2CON0,C2OUT    
+021D 3205       BRA    L223             ; if !CM2CON0(C2OUT) goto L223
+021E 0021       MOVLB  1                ; BSR=21
+021F 1F15       BTFSS  OPTION_REG,INTEDG
+0220 320C       BRA    L22D             ; if !OPTION_REG(INTEDG) goto L22D
+0221 0020       MOVLB  0                ; BSR=-27
+0222 33E5       BRA    L208             ; Relative Branch to -27
+0223 0021 L223  MOVLB  1                ; BSR=21
+0224 1B15       BTFSC  OPTION_REG,INTEDG
+0225 3207       BRA    L22D             ; if OPTION_REG(INTEDG) goto L22D
+0226 0020       MOVLB  0                ; BSR=-32
+0227 33E0       BRA    L208             ; Relative Branch to -32
+0228 1C0B L228  BTFSS  INTCON,IOCIF     
+0229 3207       BRA    L231             ; if !INTCON(IOCIF) goto L231
+022A 100B       BCF    INTCON,IOCIF     ; INTCON(IOCIF) = 0
+022B 0027       MOVLB  7                ; BSR=22
+022C 1016       BCF    IOCBF,IOCBF0     ; IOCBF(IOCBF0) = 0
+022D 0020 L22D  MOVLB  0                ; BSR=5
+0230 3267       BRA    L298             ; Relative Branch to 103
+0231 1D0B L231  BTFSS  INTCON,TMR0IF    
+0232 3211       BRA    L244             ; if !INTCON(TMR0IF) goto L244
+0233 110B       BCF    INTCON,TMR0IF    ; INTCON(TMR0IF) = 0
+0234 1E8B       BTFSS  INTCON,TMR0IE    
+0235 320E       BRA    L244             ; if !INTCON(TMR0IE) goto L244
+0236 3261       BRA    L298             ; Relative Branch to 97
+0237 128B L237  BCF    INTCON,TMR0IE    ; INTCON(TMR0IE) = 0
+0238 2299       CALL   L299             ; Call Subroutine
+0239 01DB       CLRF   PR2,f            ; PR2 = 0
+023A 3003       MOVLW  3                ; W=3
+023B 1DFA       BTFSS  TMR2,3           ; if TMR2(3) then skip
+023C 00DB       MOVWF  PR2              ; Move W to f
+023D 22AA       CALL   L2AA             ; Call Subroutine
+0240 0AD9       INCF   T1GCON,f         ; Increment f
+0241 1903       BTFSC  STATUS,Z         ; if !STATUS(Z) then skip
+0242 0ADA       INCF   TMR2,f           ; Increment f
+0243 3254       BRA    L298             ; Relative Branch to 84
+0244 1C11 L244  BTFSS  PIR1,TMR1IF      
+0245 3240       BRA    L286             ; if !PIR1(TMR1IF) goto L286
+0246 085B       MOVF   PR2,w            ; W=PR2
+0247 3903       ANDLW  3                ; AND literal with W
+0248 000B       BRW                     ; Relative Branch with W
+0249 321D       BRA    L267             ; Relative Branch to 29
+024A 3213       BRA    L25E             ; Relative Branch to 19
+024B 3209       BRA    L255             ; Relative Branch to 9
+024C 0025       MOVLB  5                ; BSR=113
+0251 3009       MOVLW  9                ; W=9
+0252 1C7A       BTFSS  CCP2CON,CCP2M0   ; if CCP2CON(CCP2M0) then skip
+0253 0093       MOVWF  CCP1CON          ; Move W to f
+0254 3229       BRA    L27E             ; Relative Branch to 41
+0255 0025 L255  MOVLB  5                ; BSR=115
+025A 3009       MOVLW  9                ; W=9
+025B 1CFA       BTFSS  CCP2CON,CCP2M1   ; if CCP2CON(CCP2M1) then skip
+025C 009A       MOVWF  CCP2CON          ; Move W to f
+025D 3220       BRA    L27E             ; Relative Branch to 32
+025E 0026 L25E  MOVLB  6                ; BSR=117
+0263 3009       MOVLW  9                ; W=9
+0264 1D7A       BTFSS  CCP4CON,CCP4M2   ; if CCP4CON(CCP4M2) then skip
+0265 0093       MOVWF  CCP3CON          ; Move W to f
+0266 3217       BRA    L27E             ; Relative Branch to 23
+0267 0026 L267  MOVLB  6                ; BSR=117
+026C 3009       MOVLW  9                ; W=9
+026D 1D7A       BTFSS  CCP4CON,CCP4M2   ; if CCP4CON(CCP4M2) then skip
+026E 0093       MOVWF  CCP3CON          ; Move W to f
+026F 0025       MOVLB  5                ; BSR=115
+0274 3009       MOVLW  9                ; W=9
+0275 1CFA       BTFSS  CCP2CON,CCP2M1   ; if CCP2CON(CCP2M1) then skip
+0276 009A       MOVWF  CCP2CON          ; Move W to f
+027B 3009       MOVLW  9                ; W=9
+027C 1C7A       BTFSS  CCP2CON,CCP2M0   ; if CCP2CON(CCP2M0) then skip
+027D 0093       MOVWF  CCP1CON          ; Move W to f
+027E 0020 L27E  MOVLB  0                ; BSR=8
+027F 3008       MOVLW  8                ; W=8
+0280 0022       MOVLB  2                ; BSR=122
+0281 1EFA       BTFSS  SRCON0,SRCLK1    ; if SRCON0(SRCLK1) then skip
+0282 068D       XORWF  LATB,f           ; Exclusive OR literal with W
+0283 0020       MOVLB  0                ; BSR=17
+0284 1011       BCF    PIR1,TMR1IF      ; PIR1(TMR1IF) = 0
+0285 3212       BRA    L298             ; Relative Branch to 18
+0286 1E93 L286  BTFSS  PIR3,CCP4IF      
+0287 3210       BRA    L298             ; if !PIR3(CCP4IF) goto L298
+0288 1293       BCF    PIR3,CCP4IF      ; PIR3(CCP4IF) = 0
+0289 0026       MOVLB  6                ; BSR=26
+028A 019A       CLRF   CCP4CON,f        ; CCP4CON = 0
+028B 0020       MOVLB  0                ; BSR=24
+028C 1018       BCF    T1CON,TMR1ON     ; T1CON(TMR1ON) = 0
+028D 3008       MOVLW  8                ; W=8
+028E 0022       MOVLB  2                ; BSR=122
+028F 1AFA       BTFSC  SRCON0,SRCLK1    ; if !SRCON0(SRCLK1) then skip
+0290 068D       XORWF  LATB,f           ; Exclusive OR literal with W
+0291 0020       MOVLB  0                ; BSR=91
+0292 08DB       MOVF   PR2,f            ; W=PR2
+0293 1903       BTFSC  STATUS,Z         
+0294 3202       BRA    L297             ; if STATUS(Z) goto L297
+0295 0BDB       DECFSZ PR2,f            ; Decrement f, Skip if 0
+0296 3201       BRA    L298             ; Relative Branch to 1
+0297 12E0 L297  BCF    INDF0,5          ; INDF0(5) = 0
+0298 0009 L298  RETFIE                  ; Return from interrupt
+0299 1018 L299  BCF    T1CON,TMR1ON     ; T1CON(TMR1ON) = 0
+029E 1418       BSF    T1CON,TMR1ON     ; T1CON(TMR1ON) = 1
+029F 0021       MOVLB  1                ; BSR=17
+02A0 1411       BSF    PIE1,TMR1IE      ; PIE1(TMR1IE) = 1
+02A1 0020       MOVLB  0                ; BSR=17
+02A2 1011       BCF    PIR1,TMR1IF      ; PIR1(TMR1IF) = 0
+02A3 0022       MOVLB  2                ; BSR=122
+02A4 1A7A       BTFSC  SRCON0,SRCLK0    ; if !SRCON0(SRCLK0) then skip
+02A5 158D       BSF    LATB,LATB3       ; LATB(LATB3) = 1
+02A6 1E7A       BTFSS  SRCON0,SRCLK0    ; if SRCON0(SRCLK0) then skip
+02A7 118D       BCF    LATB,LATB3       ; LATB(LATB3) = 0
+02A8 0020       MOVLB  0                ; BSR=-2147483648
+02A9 0008       RETURN                  ; Return from Subroutine
+02AA 13E0 L2AA  BCF    INDF0,7          ; INDF0(7) = 0
+02AB 0025       MOVLB  5                ; BSR=8
+02AC 3008       MOVLW  8                ; W=8
+02AD 0191       CLRF   CCPR1L,f         ; CCPR1L = 0
+02AE 0192       CLRF   CCPR1H,f         ; CCPR1H = 0
+02AF 0093       MOVWF  CCP1CON          ; Move W to f
+02B0 187A       BTFSC  CCP2CON,CCP2M0   ; if !CCP2CON(CCP2M0) then skip
+02B1 0193       CLRF   CCP1CON,f        ; CCP1CON = 0
+02B2 0198       CLRF   CCPR2L,f         ; CCPR2L = 0
+02B3 0199       CLRF   CCPR2H,f         ; CCPR2H = 0
+02B4 009A       MOVWF  CCP2CON          ; Move W to f
+02B5 18FA       BTFSC  CCP2CON,CCP2M1   ; if !CCP2CON(CCP2M1) then skip
+02B6 019A       CLRF   CCP2CON,f        ; CCP2CON = 0
+02B7 0026       MOVLB  6                ; BSR=17
+02B8 0191       CLRF   CCPR3L,f         ; CCPR3L = 0
+02B9 0192       CLRF   CCPR3H,f         ; CCPR3H = 0
+02BA 0093       MOVWF  CCP3CON          ; Move W to f
+02BB 197A       BTFSC  CCP4CON,CCP4M2   ; if !CCP4CON(CCP4M2) then skip
+02BC 0193       CLRF   CCP3CON,f        ; CCP3CON = 0
+02BD 0020       MOVLB  0                ; BSR=91
+02BE 085B       MOVF   PR2,w            ; W=PR2
+02BF 0025       MOVLB  5                ; BSR=3
+02C0 3903       ANDLW  3                ; AND literal with W
+02C1 000B       BRW                     ; Relative Branch with W
+02C2 320C       BRA    L2CF             ; Relative Branch to 12
+02C3 3209       BRA    L2CD             ; Relative Branch to 9
+02C4 3204       BRA    L2C9             ; Relative Branch to 4
+02C5 019A       CLRF   CCP2CON,f        ; CCP2CON = 0
+02C6 0026       MOVLB  6                ; BSR=19
+02C7 0193       CLRF   CCP3CON,f        ; CCP3CON = 0
+02C8 3206       BRA    L2CF             ; Relative Branch to 6
+02C9 0193 L2C9  CLRF   CCP3CON,f        ; CCP3CON = 0
+02CA 0026       MOVLB  6                ; BSR=19
+02CB 0193       CLRF   CCP3CON,f        ; CCP3CON = 0
+02CC 3202       BRA    L2CF             ; Relative Branch to 2
+02CD 0193 L2CD  CLRF   CCP3CON,f        ; CCP3CON = 0
+02CE 019A       CLRF   CCP4CON,f        ; CCP4CON = 0
+02CF 0026 L2CF  MOVLB  6                ; BSR=26
+02D0 019A       CLRF   CCP4CON,f        ; CCP4CON = 0
+02D7 0021       MOVLB  1                ; BSR=19
+02D8 1693       BSF    PIE3,CCP4IE      ; PIE3(CCP4IE) = 1
+02D9 0020       MOVLB  0                ; BSR=-2147483648
+02DA 0008       RETURN                  ; Return from Subroutine
+0300 0022 L300  MOVLB  2                ; BSR=68
+0309 018C       CLRF   LATA,f           ; LATA = 0
+030A 158C       BSF    LATA,LATA3       ; LATA(LATA3) = 1
+0325 0194       CLRF   CM2CON1,f        ; CM2CON1 = 0
+0326 0195       CLRF   CMOUT,f          ; CMOUT = 0
+0327 1415       BSF    CMOUT,MC1OUT     ; CMOUT(MC1OUT) = 1
+0328 0196       CLRF   BORCON,f         ; BORCON = 0
+0329 0020       MOVLB  0                ; BSR=32
+032C 0185       CLRF   FSR0H,f          ; FSR0H = 0
+032D 0189       CLRF   WREG,f           ; WREG = 0
+032E 001A L32E  MOVWI  INDF0++          ; Move W to INDF0, post inc
+032F 1F84       BTFSS  FSR0L,7          
+0330 33FD       BRA    L32E             ; if !FSR0L(7) goto L32E
+0337 3008       MOVLW  8                ; W=8
+0338 0025       MOVLB  5                ; BSR=19
+0339 0093       MOVWF  CCP1CON          ; Move W to f
+033A 009A       MOVWF  CCP2CON          ; Move W to f
+033B 0026       MOVLB  6                ; BSR=19
+033C 0093       MOVWF  CCP3CON          ; Move W to f
+033D 0028       MOVLB  8                ; BSR=124
+0340 0026       MOVLB  6                ; BSR=60
+0345 0025       MOVLB  5                ; BSR=2
+0348 0028       MOVLB  8                ; BSR=7
+034B 0020       MOVLB  0                ; BSR=255
+034E 00DC       MOVWF  T2CON            ; Move W to f
+034F 0023       MOVLB  3                ; BSR=128
+0352 019C       CLRF   SP1BRGH,f        ; SP1BRGH = 0
+0359 161D       BSF    RCSTA,CREN       ; RCSTA(CREN) = 1
+035A 0819       MOVF   RCREG,w          ; W=RCREG
+035B 0819       MOVF   RCREG,w          ; W=RCREG
+035C 0020       MOVLB  0                ; BSR=17
+035D 1291       BCF    PIR1,RCIF        ; PIR1(RCIF) = 0
+035E 0022       MOVLB  2                ; BSR=182
+0369 0020       MOVLB  0                ; BSR=108
+036A 00EC       MOVWF  PORTA            ; Move W to f
+036B 0022       MOVLB  2                ; BSR=143
+0378 0195       CLRF   CMOUT,f          ; CMOUT = 0
+0379 0021       MOVLB  1                ; BSR=19
+037A 1093       BCF    PIE3,TMR4IE      ; PIE3(TMR4IE) = 0
+037B 0020       MOVLB  0                ; BSR=160
+037E 00F2       MOVWF  PIR2             ; Move W to f
+037F 00F4       MOVWF  0x74             ; Move W to f
+0384 00F3       MOVWF  PIR3             ; Move W to f
+0385 00F5       MOVWF  TMR0             ; Move W to f
+038A 01F7       CLRF   TMR1H,f          ; TMR1H = 0
+038F 00D8       MOVWF  T1CON            ; Move W to f
+0394 0021       MOVLB  1                ; BSR=18
+0395 1712       BSF    PIE2,C2IE        ; PIE2(C2IE) = 1
+0396 0020       MOVLB  0                ; BSR=216
+0399 2C00       GOTO   L400             ; Go to address
+0400 0064 L400  CLRWDT                  ; Clear Watchdog Timer
+0401 0021       MOVLB  1                ; BSR=122
+0402 1BFA       BTFSC  OSCSTAT,T1OSCR   ; if !OSCSTAT(T1OSCR) then skip
+0403 158E       BSF    TRISC,TRISC3     ; TRISC(TRISC3) = 1
+0404 1FFA       BTFSS  OSCSTAT,T1OSCR   ; if OSCSTAT(T1OSCR) then skip
+0405 118E       BCF    TRISC,TRISC3     ; TRISC(TRISC3) = 0
+0406 0020       MOVLB  0                ; BSR=124
+0407 1FFC       BTFSS  T2CON,7          
+0408 3203       BRA    L40C             ; if !T2CON(7) goto L40C
+0409 13FC       BCF    T2CON,7          ; T2CON(7) = 0
+040A 01D9       CLRF   T1GCON,f         ; T1GCON = 0
+040B 01DA       CLRF   TMR2,f           ; TMR2 = 0
+040C 1E91 L40C  BTFSS  PIR1,RCIF        
+040D 3211       BRA    L41F             ; if !PIR1(RCIF) goto L41F
+040E 1291       BCF    PIR1,RCIF        ; PIR1(RCIF) = 0
+040F 0023       MOVLB  3                ; BSR=29
+0410 191D       BTFSC  RCSTA,FERR       
+0411 3207       BRA    L419             ; if RCSTA(FERR) goto L419
+0412 189D       BTFSC  RCSTA,OERR       
+0413 3208       BRA    L41C             ; if RCSTA(OERR) goto L41C
+0414 0819       MOVF   RCREG,w          ; W=RCREG
+0415 0020       MOVLB  0                ; BSR=97
+0416 00E1       MOVWF  INDF1            ; Move W to f
+0417 2700       CALL   L700             ; Call Subroutine
+0418 3206       BRA    L41F             ; Relative Branch to 6
+0419 0819 L419  MOVF   T1GCON,w         ; W=T1GCON
+041A 0020       MOVLB  0                ; BSR=3
+041B 3203       BRA    L41F             ; Relative Branch to 3
+041C 121D L41C  BCF    0x1D,4           ; 0x1D(4) = 0
+041D 161D       BSF    0x1D,4           ; 0x1D(4) = 1
+041E 0020       MOVLB  0                ; BSR=19
+041F 1C93 L41F  BTFSS  PIR3,TMR4IF      
+0420 3263       BRA    L484             ; if !PIR3(TMR4IF) goto L484
+0421 1093       BCF    PIR3,TMR4IF      ; PIR3(TMR4IF) = 0
+0422 2489       CALL   L489             ; Call Subroutine
+0423 0BD6       DECFSZ TMR1L,f          ; Decrement f, Skip if 0
+0424 325F       BRA    L484             ; Relative Branch to 95
+0427 1455       BSF    TMR0,0           ; TMR0(0) = 1
+0428 08DD       MOVF   0x5D,f           ; W=0x5D
+0429 1903       BTFSC  STATUS,Z         
+042A 3203       BRA    L42E             ; if STATUS(Z) goto L42E
+042B 0BDD       DECFSZ 0x5D,f           ; Decrement f, Skip if 0
+042C 3201       BRA    L42E             ; Relative Branch to 1
+042D 2726       CALL   L726             ; Call Subroutine
+042E 08E9 L42E  MOVF   WREG,f           ; W=WREG
+042F 1D03       BTFSS  STATUS,Z         ; if STATUS(Z) then skip
+0430 03E9       DECF   WREG,f           ; Decrement f
+0431 0BD0       DECFSZ PORTE,f          ; Decrement f, Skip if 0
+0432 3217       BRA    L44A             ; Relative Branch to 23
+0435 14D5       BSF    TMR0,1           ; TMR0(1) = 1
+0436 0BD1       DECFSZ PIR1,f           ; Decrement f, Skip if 0
+0437 3203       BRA    L43B             ; Relative Branch to 3
+043A 1555       BSF    TMR0,2           ; TMR0(2) = 1
+043B 0BD2 L43B  DECFSZ PIR2,f           ; Decrement f, Skip if 0
+043C 320D       BRA    L44A             ; Relative Branch to 13
+043F 15D5       BSF    TMR0,3           ; TMR0(3) = 1
+0440 0BD3       DECFSZ PIR3,f           ; Decrement f, Skip if 0
+0441 3208       BRA    L44A             ; Relative Branch to 8
+0444 1655       BSF    TMR0,4           ; TMR0(4) = 1
+0445 0BD4       DECFSZ 0x54,f           ; Decrement f, Skip if 0
+0446 3203       BRA    L44A             ; Relative Branch to 3
+0449 16D5       BSF    TMR0,5           ; TMR0(5) = 1
+044A 1C55 L44A  BTFSS  TMR0,0           
+044B 3214       BRA    L460             ; if !TMR0(0) goto L460
+044C 08D8       MOVF   T1CON,f          ; W=T1CON
+044D 1903       BTFSC  STATUS,Z         
+044E 3210       BRA    L45F             ; if STATUS(Z) goto L45F
+044F 0BD8       DECFSZ T1CON,f          ; Decrement f, Skip if 0
+0450 320E       BRA    L45F             ; Relative Branch to 14
+0451 08DB       MOVF   PR2,f            ; W=PR2
+0452 1D03       BTFSS  STATUS,Z         
+0453 3206       BRA    L45A             ; if !STATUS(Z) goto L45A
+0454 1F7A       BTFSS  TMR2,6           
+0455 3209       BRA    L45F             ; if !TMR2(6) goto L45F
+0456 01DB       CLRF   PR2,f            ; PR2 = 0
+0457 3003       MOVLW  3                ; W=3
+0458 1DFA       BTFSS  TMR2,3           ; if TMR2(3) then skip
+0459 00DB       MOVWF  PR2              ; Move W to f
+045C 2299       CALL   L299             ; Call Subroutine
+045D 22AA       CALL   L2AA             ; Call Subroutine
+045E 3200       BRA    L45F             ; Relative Branch to 0
+045F 1055 L45F  BCF    TMR0,0           ; TMR0(0) = 0
+0460 1CD5 L460  BTFSS  TMR0,1           
+0461 3201       BRA    L463             ; if !TMR0(1) goto L463
+0462 10D5       BCF    TMR0,1           ; TMR0(1) = 0
+0463 1D55 L463  BTFSS  TMR0,2           
+0464 3201       BRA    L466             ; if !TMR0(2) goto L466
+0465 1155       BCF    TMR0,2           ; TMR0(2) = 0
+0466 1DD5 L466  BTFSS  TMR0,3           
+0467 3204       BRA    L46C             ; if !TMR0(3) goto L46C
+0468 1A0D       BTFSC  PORTB,RB4        ; if !PORTB(RB4) then skip
+0469 15FA       BSF    TMR2,3           ; TMR2(3) = 1
+046A 2726       CALL   L726             ; Call Subroutine
+046B 11D5       BCF    TMR0,3           ; TMR0(3) = 0
+046C 1E55 L46C  BTFSS  TMR0,4           
+046D 3213       BRA    L481             ; if !TMR0(4) goto L481
+046E 03EC       DECF   PORTA,f          ; Decrement f
+046F 3006       MOVLW  6                ; W=6
+0470 026C       SUBWF  PORTA,w          ; Subtract W from f
+0471 1C03       BTFSS  STATUS,C         ; if STATUS(C) then skip
+0472 0AEC       INCF   PORTA,f          ; Increment f
+0473 1F7A       BTFSS  TMR2,6           
+0474 320B       BRA    L480             ; if !TMR2(6) goto L480
+0475 08D8       MOVF   T1CON,f          ; W=T1CON
+0476 1D03       BTFSS  STATUS,Z         
+0477 3208       BRA    L480             ; if !STATUS(Z) goto L480
+0478 01DB       CLRF   PR2,f            ; PR2 = 0
+0479 3003       MOVLW  3                ; W=3
+047A 1DFA       BTFSS  TMR2,3           ; if TMR2(3) then skip
+047B 00DB       MOVWF  PR2              ; Move W to f
+047E 2299       CALL   L299             ; Call Subroutine
+047F 22AA       CALL   L2AA             ; Call Subroutine
+0480 1255 L480  BCF    TMR0,4           ; TMR0(4) = 0
+0481 1ED5 L481  BTFSS  TMR0,5           
+0482 3201       BRA    L484             ; if !TMR0(5) goto L484
+0483 12D5       BCF    TMR0,5           ; TMR0(5) = 0
+0484 1818 L484  BTFSC  T1CON,TMR1ON     
+0485 3202       BRA    L488             ; if T1CON(TMR1ON) goto L488
+0486 2500       CALL   L500             ; Call Subroutine
+0487 2600       CALL   L600             ; Call Subroutine
+0488 2C00 L488  GOTO   L400             ; Go to address
+048B 086B       MOVF   INTCON,w         ; W=INTCON
+048C 0782       ADDRWF PCL,f            ; Add W and f
+048D 2C90       GOTO   L490             ; Go to address
+048E 2C96       GOTO   L496             ; Go to address
+048F 2C9B       GOTO   L49B             ; Go to address
+0490 0021 L490  MOVLB  1                ; BSR=13
+0493 0020       MOVLB  0                ; BSR=107
+0494 0AEB       INCF   INTCON,f         ; Increment f
+0495 0008       RETURN                  ; Return from Subroutine
+0496 0021 L496  MOVLB  1                ; BSR=29
+0497 149D       BSF    ADCON0,ADGO      ; ADCON0(ADGO) = 1
+0498 0020       MOVLB  0                ; BSR=107
+0499 0AEB       INCF   INTCON,f         ; Increment f
+049A 0008       RETURN                  ; Return from Subroutine
+049B 24AC L49B  CALL   L4AC             ; Call Subroutine
+049C 0C6A       RRF    PCLATH,w         ; Rotate Right f through Carry
+049D 0C09       RRF    WREG,w           ; Rotate Right f through Carry
+049E 0C09       RRF    WREG,w           ; Rotate Right f through Carry
+049F 391F       ANDLW  0x1F             ; AND literal with W
+04A0 00ED       MOVWF  PORTB            ; Move W to f
+04A1 026C       SUBWF  PORTA,w          ; Subtract W from f
+04A2 1803       BTFSC  STATUS,C         
+04A3 2CAA       GOTO   L4AA             ; if STATUS(C) goto L4AA
+04A6 036C       DECF   PORTA,w          ; Decrement f
+04A7 0022       MOVLB  2                ; BSR=25
+04A8 0099       MOVWF  DACCON1          ; Move W to f
+04A9 0020       MOVLB  0                ; BSR=107
+04AA 01EB L4AA  CLRF   INTCON,f         ; INTCON = 0
+04AB 0008       RETURN                  ; Return from Subroutine
+04AC 0021 L4AC  MOVLB  1                ; BSR=28
+04AD 081C       MOVF   ADRESH,w         ; W=ADRESH
+04AE 0020       MOVLB  0                ; BSR=106
+04AF 066A       XORWF  PCLATH,w         ; Exclusive OR literal with W
+04B0 1903       BTFSC  STATUS,Z         
+04B1 2CC7       GOTO   L4C7             ; if STATUS(Z) goto L4C7
+04B2 0A6A       INCF   PCLATH,w         ; Increment f
+04B3 1903       BTFSC  STATUS,Z         
+04B4 2CBA       GOTO   L4BA             ; if STATUS(Z) goto L4BA
+04B5 0021       MOVLB  1                ; BSR=28
+04B6 061C       XORWF  ADRESH,w         ; Exclusive OR literal with W
+04B7 0020       MOVLB  0                ; BSR=3
+04B8 1903       BTFSC  STATUS,Z         
+04B9 2CC7       GOTO   L4C7             ; if STATUS(Z) goto L4C7
+04BA 086A L4BA  MOVF   PCLATH,w         ; W=PCLATH
+04BB 1903       BTFSC  STATUS,Z         
+04BC 2CC3       GOTO   L4C3             ; if STATUS(Z) goto L4C3
+04BD 036A       DECF   PCLATH,w         ; Decrement f
+04BE 0021       MOVLB  1                ; BSR=28
+04BF 061C       XORWF  ADRESH,w         ; Exclusive OR literal with W
+04C0 0020       MOVLB  0                ; BSR=3
+04C1 1903       BTFSC  STATUS,Z         
+04C2 2CC7       GOTO   L4C7             ; if STATUS(Z) goto L4C7
+04C3 0021 L4C3  MOVLB  1                ; BSR=28
+04C4 081C       MOVF   ADRESH,w         ; W=ADRESH
+04C5 0020       MOVLB  0                ; BSR=106
+04C6 00EA       MOVWF  PCLATH           ; Move W to f
+04C7 0008 L4C7  RETURN                  ; Return from Subroutine
+0500 1CE0 L500  BTFSS  INDF0,1          
+0501 32AC       BRA    L5AE             ; if !INDF0(1) goto L5AE
+0502 10E0       BCF    INDF0,1          ; INDF0(1) = 0
+0503 08E6       MOVF   FSR1L,f          ; W=FSR1L
+0504 1D03       BTFSS  STATUS,Z         
+0505 32A8       BRA    L5AE             ; if !STATUS(Z) goto L5AE
+0506 30F8       MOVLW  0xF8             ; W=0xF8
+0507 0520       ANDWF  INDF0,w          ; AND W with f
+0508 1D03       BTFSS  STATUS,Z         
+0509 32A4       BRA    L5AE             ; if !STATUS(Z) goto L5AE
+050C 1903       BTFSC  STATUS,Z         
+050D 32A0       BRA    L5AE             ; if STATUS(Z) goto L5AE
+0512 0820       MOVF   INDF0,w          ; W=INDF0
+0513 000B       BRW                     ; Relative Branch with W
+0514 3207       BRA    L51C             ; Relative Branch to 7
+0515 3239       BRA    L54F             ; Relative Branch to 57
+0516 326D       BRA    L584             ; Relative Branch to 109
+0517 3296       BRA    L5AE             ; Relative Branch to 150
+0518 3295       BRA    L5AE             ; Relative Branch to 149
+0519 3235       BRA    L54F             ; Relative Branch to 53
+051A 3293       BRA    L5AE             ; Relative Branch to 147
+051B 3292       BRA    L5AE             ; Relative Branch to 146
+0520 300F       MOVLW  0x0F             ; W=0x0F
+0521 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0522 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0523 01E6       CLRF   FSR1L,f          ; FSR1L = 0
+0524 3000       MOVLW  0                ; W=0
+0525 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0526 0865       MOVF   FSR0H,w          ; W=FSR0H
+0527 253D       CALL   L53D             ; Call Subroutine
+0528 0822       MOVF   PCL,w            ; W=PCL
+0529 253D       CALL   L53D             ; Call Subroutine
+052A 0823       MOVF   STATUS,w         ; W=STATUS
+052B 253D       CALL   L53D             ; Call Subroutine
+052C 138B       BCF    INTCON,GIE       ; INTCON(GIE) = 0
+052D 0012 L52D  MOVIW  INDF0++          ; Move INDF0 to W, post inc
+052E 253D       CALL   L53D             ; Call Subroutine
+052F 0BE5       DECFSZ FSR0H,f          ; Decrement f, Skip if 0
+0530 33FC       BRA    L52D             ; Relative Branch to -4
+0531 178B       BSF    INTCON,GIE       ; INTCON(GIE) = 1
+0532 0966 L532  COMF   FSR1L,w          ; Complement f
+0533 3E01       ADDLW  1                ; Add literal and W
+0534 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0535 3004       MOVLW  4                ; W=4
+0536 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0537 30A0       MOVLW  0xA0             ; W=0xA0
+0538 0206       SUBWF  FSR1L,w          ; Subtract W from f
+0539 00E5       MOVWF  FSR0H            ; Move W to f
+053C 3271       BRA    L5AE             ; Relative Branch to 113
+053D 00E2 L53D  MOVWF  PCL              ; Move W to f
+053E 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+053F 1903       BTFSC  STATUS,Z         
+0540 3208       BRA    L549             ; if STATUS(Z) goto L549
+0541 0862       MOVF   PCL,w            ; W=PCL
+0542 3A04       XORLW  4                ; Exclusive OR literal with W
+0543 1903       BTFSC  STATUS,Z         
+0544 3204       BRA    L549             ; if STATUS(Z) goto L549
+0545 0862       MOVF   PCL,w            ; W=PCL
+0546 3A05       XORLW  5                ; Exclusive OR literal with W
+0547 1D03       BTFSS  STATUS,Z         
+0548 3202       BRA    L54B             ; if !STATUS(Z) goto L54B
+0549 3005 L549  MOVLW  5                ; W=5
+054A 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+054B 0862 L54B  MOVF   PCL,w            ; W=PCL
+054C 07E6       ADDRWF FSR1L,f          ; Add W and f
+054D 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+054E 0008       RETURN                  ; Return from Subroutine
+0551 0187       CLRF   FSR1H,f          ; FSR1H = 0
+0552 138B       BCF    INTCON,GIE       ; INTCON(GIE) = 0
+0553 0016 L553  MOVIW  INDF1++          ; Move INDF1 to W, post inc
+0554 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0555 0BE5       DECFSZ FSR0H,f          ; Decrement f, Skip if 0
+0556 33FC       BRA    L553             ; Relative Branch to -4
+0557 178B       BSF    INTCON,GIE       ; INTCON(GIE) = 1
+0558 0320       DECF   INDF0,w          ; Decrement f
+0559 1903       BTFSC  STATUS,Z         
+055A 3217       BRA    L572             ; if STATUS(Z) goto L572
+055F 300F       MOVLW  0x0F             ; W=0x0F
+0560 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0561 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+0562 3005       MOVLW  5                ; W=5
+0563 253D       CALL   L53D             ; Call Subroutine
+0564 3003       MOVLW  3                ; W=3
+0565 253D       CALL   L53D             ; Call Subroutine
+0566 3060       MOVLW  0x60             ; W=0x60
+0567 253D       CALL   L53D             ; Call Subroutine
+0568 3000       MOVLW  0                ; W=0
+0569 253D       CALL   L53D             ; Call Subroutine
+056A 0860       MOVF   INDF0,w          ; W=INDF0
+056B 1360       BCF    INDF0,6          ; INDF0(6) = 0
+056C 253D       CALL   L53D             ; Call Subroutine
+056D 0859       MOVF   T1GCON,w         ; W=T1GCON
+056E 253D       CALL   L53D             ; Call Subroutine
+056F 085A       MOVF   TMR2,w           ; W=TMR2
+0570 253D       CALL   L53D             ; Call Subroutine
+0571 33C0       BRA    L532             ; Relative Branch to -64
+0576 300F       MOVLW  0x0F             ; W=0x0F
+0577 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0578 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0579 3001       MOVLW  1                ; W=1
+057A 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+057B 30FF       MOVLW  0xFF             ; W=0xFF
+057C 001A       MOVWI  INDF0++          ; Move W to INDF0, post inc
+0583 322A       BRA    L5AE             ; Relative Branch to 42
+0584 138B L584  BCF    INTCON,GIE       ; INTCON(GIE) = 0
+0585 3095       MOVLW  0x95             ; W=0x95
+0586 0604       XORWF  FSR0L,w          ; Exclusive OR literal with W
+0587 1D03       BTFSS  STATUS,Z         
+0588 320B       BRA    L594             ; if !STATUS(Z) goto L594
+0589 08A5       MOVF   FSR0H,f          ; W=FSR0H
+058A 0027       MOVLB  7                ; BSR=20
+058B 1014       BCF    IOCBP,IOCBP0     ; IOCBP(IOCBP0) = 0
+058C 1015       BCF    IOCBN,IOCBN0     ; IOCBN(IOCBN0) = 0
+058D 1D03       BTFSS  STATUS,Z         
+058E 3203       BRA    L592             ; if !STATUS(Z) goto L592
+058F 1414       BSF    IOCBP,IOCBP0     ; IOCBP(IOCBP0) = 1
+0590 0196       CLRF   IOCBF,f          ; IOCBF = 0
+0591 3202       BRA    L594             ; Relative Branch to 2
+0592 1415 L592  BSF    IOCBN,IOCBN0     ; IOCBN(IOCBN0) = 1
+0593 0196       CLRF   IOCBF,f          ; IOCBF = 0
+0594 0020 L594  MOVLB  0                ; BSR=0
+0595 0800       MOVF   INDF0,w          ; W=INDF0
+0596 0524       ANDWF  FSR0L,w          ; AND W with f
+0597 0425       XORWF  FSR0H,w          ; Exclusive OR W with f
+0598 0080       MOVWF  INDF0            ; Move W to f
+0599 178B       BSF    INTCON,GIE       ; INTCON(GIE) = 1
+059E 300F       MOVLW  0x0F             ; W=0x0F
+059F 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A0 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A3 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A4 3001       MOVLW  1                ; W=1
+05A5 07E6       ADDRWF FSR1L,f          ; Add W and f
+05A6 001E       MOVWI  INDF1++          ; Move W to INDF1, post inc
+05A7 0822       MOVF   PCL,w            ; W=PCL
+05A8 253D       CALL   L53D             ; Call Subroutine
+05A9 0823       MOVF   STATUS,w         ; W=STATUS
+05AA 253D       CALL   L53D             ; Call Subroutine
+05AB 0800       MOVF   INDF0,w          ; W=INDF0
+05AC 253D       CALL   L53D             ; Call Subroutine
+05AD 3384       BRA    L532             ; Relative Branch to -124
+05AE 0008 L5AE  RETURN                  ; Return from Subroutine
+0600 08E4 L600  MOVF   FSR0L,f          ; W=FSR0L
+0601 1903       BTFSC  STATUS,Z         
+0602 3210       BRA    L613             ; if STATUS(Z) goto L613
+0603 0023       MOVLB  3                ; BSR=30
+0604 1C9E       BTFSS  TXSTA,TRMT       
+0605 320D       BRA    L613             ; if !TXSTA(TRMT) goto L613
+0606 0020       MOVLB  0                ; BSR=100
+060B 0801       MOVF   INDF1,w          ; W=INDF1
+060C 0023       MOVLB  3                ; BSR=26
+060D 009A       MOVWF  TXREG            ; Move W to f
+060E 0020       MOVLB  0                ; BSR=100
+060F 0AE4       INCF   FSR0L,f          ; Increment f
+0610 0BE5       DECFSZ FSR0H,f          ; Decrement f, Skip if 0
+0611 3201       BRA    L613             ; Relative Branch to 1
+0612 01E4       CLRF   FSR0L,f          ; FSR0L = 0
+0613 0020 L613  MOVLB  0                ; BSR=-2147483648
+0614 0008       RETURN                  ; Return from Subroutine
+0700 0861 L700  MOVF   INDF1,w          ; W=INDF1
+0701 3A0F       XORLW  0x0F             ; Exclusive OR literal with W
+0702 1D03       BTFSS  STATUS,Z         
+0703 3212       BRA    L716             ; if !STATUS(Z) goto L716
+0704 1860       BTFSC  INDF0,0          
+0705 3204       BRA    L70A             ; if INDF0(0) goto L70A
+0708 01E6       CLRF   FSR1L,f          ; FSR1L = 0
+0709 0008       RETURN                  ; Return from Subroutine
+070A 1060 L70A  BCF    INDF0,0          ; INDF0(0) = 0
+070D 0185       CLRF   FSR0H,f          ; FSR0H = 0
+0710 07E6       ADDRWF FSR1L,f          ; Add W and f
+0711 0AE3       INCF   STATUS,f         ; Increment f
+0712 1F63       BTFSS  STATUS,6         ; if STATUS(6) then skip
+0713 0008       RETURN                  ; Return from Subroutine
+0714 03E3       DECF   STATUS,f         ; Decrement f
+0715 0008       RETURN                  ; Return from Subroutine
+0716 0861 L716  MOVF   INDF1,w          ; W=INDF1
+0717 3A04       XORLW  4                ; Exclusive OR literal with W
+0718 1D03       BTFSS  STATUS,Z         
+0719 3204       BRA    L71E             ; if !STATUS(Z) goto L71E
+071A 1860       BTFSC  INDF0,0          
+071B 33EE       BRA    L70A             ; if INDF0(0) goto L70A
+071C 14E0       BSF    INDF0,1          ; INDF0(1) = 1
+071D 0008       RETURN                  ; Return from Subroutine
+071E 0861 L71E  MOVF   INDF1,w          ; W=INDF1
+071F 3A05       XORLW  5                ; Exclusive OR literal with W
+0720 1D03       BTFSS  STATUS,Z         
+0721 33E8       BRA    L70A             ; if !STATUS(Z) goto L70A
+0722 1860       BTFSC  INDF0,0          
+0723 33E6       BRA    L70A             ; if INDF0(0) goto L70A
+0724 1460       BSF    INDF0,0          ; INDF0(0) = 1
+0725 0008       RETURN                  ; Return from Subroutine
+0726 0026 L726  MOVLB  6                ; BSR=240
+0727 30F0       MOVLW  0xF0             ; W=0xF0
+0728 059E       ANDWF  CCP5CON,f        ; AND W with f
+0729 0020       MOVLB  0                ; BSR=-2147483648
+072A 0008       RETURN                  ; Return from Subroutine
+072B 0026 L72B  MOVLB  6                ; BSR=12
+072C 300C       MOVLW  0x0C             ; W=0x0C
+072D 049E       XORWF  CCP5CON,f        ; Exclusive OR W with f
+072E 0020       MOVLB  0                ; BSR=-2147483648
+072F 0008       RETURN                  ; Return from Subroutine
+0730 0008       RETURN                  ; Return from Subroutine
+8007 0F4C       INCFSZ PORTA,w          ; Increment f, Skip if 0
+; Not Visited
+0006 300F       MOVLW  0x0F             
+0007 0097       MOVWF  WDTCON           ; WDTCON=0x0F (SWDTEN|WDTPS0|WDTPS1|WDTPS2)
+0008 0020       MOVLB  0                
+0009 0023       MOVLB  3                ; BSR=3
+000C 0020       MOVLB  0                
+000D 0021       MOVLB  1                ; BSR=1
+000E 3000       MOVLW  0                
+000F 0099       MOVWF  OSCCON           ; OSCCON=0
+0010 0020       MOVLB  0                
+0011 0022       MOVLB  2                ; BSR=2
+0012 3040       MOVLW  0x40             
+0013 009D       MOVWF  APFCON           ; APFCON=0x40 (CCP3SEL)
+0014 0020       MOVLB  0                
+0015 0021       MOVLB  1                ; BSR=1
+0016 3008       MOVLW  8                
+0017 0095       MOVWF  OPTION_REG       ; OPTION_REG=8 (PSA)
+0018 0020       MOVLB  0                
+0019 0021       MOVLB  1                ; BSR=1
+001A 3001       MOVLW  1                
+001B 008C       MOVWF  TRISA            ; TRISA=1 (TRISA0)
+001D 0020       MOVLB  0                
+001E 0022       MOVLB  2                ; BSR=2
+0021 0020       MOVLB  0                
+0022 0021       MOVLB  1                ; BSR=1
+0023 3070       MOVLW  0x70             
+0024 0099       MOVWF  OSCCON           ; OSCCON=0x70 (IRCF1|IRCF2|IRCF3)
+002B 0020       MOVLB  0                
+002C 0023       MOVLB  3                ; BSR=3
+002D 30FF       MOVLW  0xFF             
+002E 0091       MOVWF  EEADRL           ; EEADRL=0xFF
+0038 30FF       MOVLW  0xFF             
+0039 0091       MOVWF  EEADRL           ; EEADRL=0xFF
+003F 300E       MOVLW  0x0E             
+0040 0097       MOVWF  WDTCON           ; WDTCON=0x0E (WDTPS0|WDTPS1|WDTPS2)
+0043 3080       MOVLW  0x80             
+0044 009D       MOVWF  RCSTA            ; RCSTA=0x80 (SPEN)
+0045 3026       MOVLW  0x26             
+0046 009E       MOVWF  TXSTA            ; TXSTA=0x26 (TRMT|BRGH|TXEN)
+004A 3003       MOVLW  3                
+004B 0095       MOVWF  OPTION_REG       ; OPTION_REG=3 (PS0|PS1)
+0058 0815       MOVF   TMR0,w           
+0059 00F3       MOVWF  PIR3             ; PIR3=TMR0 (CCP3IF)
+005F 3022       MOVLW  0x22             
+0060 009B       MOVWF  SP1BRGL          ; SP1BRGL=0x22
+0066 30FF       MOVLW  0xFF             
+0067 0095       MOVWF  OPTION_REG       ; OPTION_REG=0xFF (PS0|PS1|PS2|PSA|TMR0SE|TMR0CS|INTEDG|NOT_WPUEN)
+006F 0819       MOVF   RCREG,w          
+0070 00F4       MOVWF  EEDATH           ; EEDATH=RCREG
+0074 3000       MOVLW  0                
+0075 0084       MOVWF  FSR0L            ; FSR0L=0
+0076 3020       MOVLW  0x20             
+0077 0085       MOVWF  FSR0H            ; FSR0H=0x20
+007F 0819       MOVF   RCREG,w          
+0080 00F4       MOVWF  EEDATH           ; EEDATH=RCREG
+0093 0819       MOVF   RCREG,w          
+0094 00F4       MOVWF  EEDATH           ; EEDATH=RCREG
+009F 3000       MOVLW  0                
+00A0 0086       MOVWF  FSR1L            ; FSR1L=0
+00A1 3020       MOVLW  0x20             
+00A2 0087       MOVWF  FSR1H            ; FSR1H=0x20
+00B3 3005 L0B3  MOVLW  5                
+00B4 0084       MOVWF  FSR0L            ; FSR0L=5
+00B5 3020       MOVLW  0x20             
+00B6 0085       MOVWF  FSR0H            ; FSR0H=0x20
+010D 3094       MOVLW  0x94             
+010E 0095       MOVWF  EECON1           ; EECON1=0x94 (WREN|FREE|EEPGD)
+012D 3001 L12D  MOVLW  1                
+0133 3000       MOVLW  0                
+0134 0084       MOVWF  FSR0L            ; FSR0L=0
+0135 3020       MOVLW  0x20             
+0136 0085       MOVWF  FSR0H            ; FSR0H=0x20
+0157 3055 L157  MOVLW  0x55             
+0158 0096       MOVWF  TMR1L            ; TMR1L=0x55
+0159 30AA       MOVLW  0xAA             
+015A 0096       MOVWF  TMR1L            ; TMR1L=0xAA
+015F 3004 L15F  MOVLW  4                
+0160 0095       MOVWF  TMR0             ; TMR0=4
+020F 3005       MOVLW  5                
+0210 00E9       MOVWF  WREG             ; WREG=5
+0214 085C       MOVF   T2CON,w          
+0215 00DD       MOVWF  0x5D             ; 0x5D=T2CON
+022E 3005       MOVLW  5                
+022F 00E9       MOVWF  WREG             ; WREG=5
+023E 087B       MOVF   PR2,w            
+023F 00D8       MOVWF  T1CON            ; T1CON=PR2 (TMR1ON|T1OSCEN|T1CKPS0|T1CKPS1|TMR1CS0)
+024D 0871       MOVF   CCPR1L,w         
+024E 0092       MOVWF  CCPR1H           ; CCPR1H=CCPR1L
+024F 0870       MOVF   0x70,w           
+0250 0091       MOVWF  CCPR1L           ; CCPR1L=0x70
+0256 0873       MOVF   CCP1CON,w        
+0257 0099       MOVWF  CCPR2H           ; CCPR2H=CCP1CON
+0258 0872       MOVF   CCPR1H,w         
+0259 0098       MOVWF  CCPR2L           ; CCPR2L=CCPR1H
+025F 0875       MOVF   ECCP3AS,w        
+0260 0092       MOVWF  CCPR3H           ; CCPR3H=ECCP3AS
+0261 0874       MOVF   PWM3CON,w        
+0262 0091       MOVWF  CCPR3L           ; CCPR3L=PWM3CON
+0268 0875       MOVF   ECCP3AS,w        
+0269 0092       MOVWF  CCPR3H           ; CCPR3H=ECCP3AS
+026A 0874       MOVF   PWM3CON,w        
+026B 0091       MOVWF  CCPR3L           ; CCPR3L=PWM3CON
+0270 0873       MOVF   CCP1CON,w        
+0271 0099       MOVWF  CCPR2H           ; CCPR2H=CCP1CON
+0272 0872       MOVF   CCPR1H,w         
+0273 0098       MOVWF  CCPR2L           ; CCPR2L=CCPR1H
+0277 0871       MOVF   CCPR1L,w         
+0278 0092       MOVWF  CCPR1H           ; CCPR1H=CCPR1L
+0279 0870       MOVF   0x70,w           
+027A 0091       MOVWF  CCPR1L           ; CCPR1L=0x70
+029A 087D       MOVF   0x7D,w           
+029B 0096       MOVWF  TMR1L            ; TMR1L=0x7D
+029C 087E       MOVF   CPSCON0,w        
+029D 0097       MOVWF  TMR1H            ; TMR1H=CPSCON0
+02D1 0879       MOVF   CCPR4H,w         
+02D2 0099       MOVWF  CCPR4H           ; CCPR4H=CCPR4H
+02D3 0878       MOVF   CCPR4L,w         
+02D4 0098       MOVWF  CCPR4L           ; CCPR4L=CCPR4L
+02D5 300A       MOVLW  0x0A             
+02D6 009A       MOVWF  CCP4CON          ; CCP4CON=0x0A (CCP4M1|CCP4M3)
+0301 3044       MOVLW  0x44             
+0302 009D       MOVWF  APFCON           ; APFCON=0x44 (C2OUTSEL|CCP3SEL)
+0303 0020       MOVLB  0                
+0304 0021       MOVLB  1                ; BSR=1
+0305 3003       MOVLW  3                
+0306 0095       MOVWF  OPTION_REG       ; OPTION_REG=3 (PS0|PS1)
+0307 0020       MOVLB  0                
+0308 0023       MOVLB  3                ; BSR=3
+030B 0020       MOVLB  0                
+030C 0021       MOVLB  1                ; BSR=1
+030D 30AA       MOVLW  0xAA             
+030E 008C       MOVWF  TRISA            ; TRISA=0xAA (TRISA1|TRISA3|TRISA5|TRISA7)
+030F 3051       MOVLW  0x51             
+0310 008D       MOVWF  TRISB            ; TRISB=0x51 (TRISB0|TRISB4|TRISB6)
+0311 30C0       MOVLW  0xC0             
+0312 008E       MOVWF  TRISC            ; TRISC=0xC0 (TRISC6|TRISC7)
+0313 30FF       MOVLW  0xFF             
+0314 0090       MOVWF  TRISE            ; TRISE=0xFF (TRISE3)
+0315 0020       MOVLB  0                
+0316 0022       MOVLB  2                ; BSR=2
+0317 30EF       MOVLW  0xEF             
+0318 008C       MOVWF  LATA             ; LATA=0xEF (LATA0|LATA1|LATA2|LATA3|LATA5|LATA6|LATA7)
+0319 3051       MOVLW  0x51             
+031A 008D       MOVWF  LATB             ; LATB=0x51 (LATB0|LATB4|LATB6)
+031B 30C0       MOVLW  0xC0             
+031C 008E       MOVWF  LATC             ; LATC=0xC0 (LATC6|LATC7)
+031D 30FF       MOVLW  0xFF             
+031E 0090       MOVWF  LATE             ; LATE=0xFF (LATE3)
+031F 0020       MOVLB  0                
+0320 0024       MOVLB  4                ; BSR=4
+0321 3011       MOVLW  0x11             
+0322 008D       MOVWF  WPUB             ; WPUB=0x11 (WPUB0|WPUB4)
+0323 0020       MOVLB  0                
+0324 0027       MOVLB  7                ; BSR=7
+032A 3020       MOVLW  0x20             
+032B 0084       MOVWF  FSR0L            ; FSR0L=0x20
+0331 3079       MOVLW  0x79             
+0332 00EE       MOVWF  PORTC            ; PORTC=0x79 (RC0|RC3|RC4|RC5|RC6)
+0333 3000       MOVLW  0                
+0334 00EF       MOVWF  0x6F             ; 0x6F=0
+0335 3004       MOVLW  4                
+0336 0098       MOVWF  T1CON            ; T1CON=4 (NOT_T1SYNC)
+033E 307C       MOVLW  0x7C             
+033F 009D       MOVWF  PR6              ; PR6=0x7C
+0341 303C       MOVLW  0x3C             
+0342 009E       MOVWF  CCP5CON          ; CCP5CON=0x3C (CCP5M2|CCP5M3|DC5B0|DC5B1)
+0343 303E       MOVLW  0x3E             
+0344 009C       MOVWF  CCPR5L           ; CCPR5L=0x3E
+0346 3002       MOVLW  2                
+0347 009F       MOVWF  CCPTMRS1         ; CCPTMRS1=2 (C5TSEL1)
+0349 3007       MOVLW  7                
+034A 009E       MOVWF  T6CON            ; T6CON=7 (T6CKPS0|T6CKPS1|TMR6ON)
+034C 30FF       MOVLW  0xFF             
+034D 00DD       MOVWF  0x5D             ; 0x5D=0xFF
+0350 3080       MOVLW  0x80             
+0351 009D       MOVWF  RCSTA            ; RCSTA=0x80 (SPEN)
+0353 3044       MOVLW  0x44             
+0354 009B       MOVWF  SP1BRGL          ; SP1BRGL=0x44
+0355 3027       MOVLW  0x27             
+0356 009E       MOVWF  TXSTA            ; TXSTA=0x27 (TX9D|TRMT|BRGH|TXEN)
+0357 3048       MOVLW  0x48             
+0358 009F       MOVWF  BAUDCON          ; BAUDCON=0x48 (BRG16|RCIDL)
+035F 30B6       MOVLW  0xB6             
+0360 0093       MOVWF  CM2CON0          ; CM2CON0=0xB6 (C2HYS|C2SP|C2POL|C2OE|C2ON)
+0361 30D1       MOVLW  0xD1             
+0362 0094       MOVWF  CM2CON1          ; CM2CON1=0xD1 (C2NCH0|C2PCH0|C2INTN|C2INTP)
+0363 0020       MOVLB  0                
+0364 0022       MOVLB  2                ; BSR=2
+0365 30A8       MOVLW  0xA8             
+0366 0098       MOVWF  DACCON0          ; DACCON0=0xA8 (DACPSS1|DACOE|DACEN)
+0367 3017       MOVLW  0x17             
+0368 0099       MOVWF  DACCON1          ; DACCON1=0x17 (DACR0|DACR1|DACR2|DACR4)
+036C 308F       MOVLW  0x8F             
+036D 0097       MOVWF  FVRCON           ; FVRCON=0x8F (ADFVR0|ADFVR1|CDAFVR0|CDAFVR1|FVREN)
+036E 0020       MOVLB  0                
+036F 0021       MOVLB  1                ; BSR=1
+0370 3063       MOVLW  0x63             
+0371 009E       MOVWF  ADCON1           ; ADCON1=0x63 (ADPREF0|ADPREF1|ADCS1|ADCS2)
+0372 0020       MOVLB  0                
+0373 0028       MOVLB  8                ; BSR=8
+0374 307D       MOVLW  0x7D             
+0375 0096       MOVWF  PR4              ; PR4=0x7D
+0376 3006       MOVLW  6                
+0377 0097       MOVWF  T4CON            ; T4CON=6 (T4CKPS1|TMR4ON)
+037C 30A0       MOVLW  0xA0             
+037D 00F0       MOVWF  PORTE            ; PORTE=0xA0
+0380 30A0       MOVLW  0xA0             
+0381 00F8       MOVWF  T1CON            ; T1CON=0xA0 (T1CKPS1|TMR1CS1)
+0382 3000       MOVLW  0                
+0383 00F1       MOVWF  PIR1             ; PIR1=0
+0386 3000       MOVLW  0                
+0387 00F9       MOVWF  T1GCON           ; T1GCON=0
+0388 3028       MOVLW  0x28             
+0389 00F6       MOVWF  TMR1L            ; TMR1L=0x28
+038B 3060       MOVLW  0x60             
+038C 00FA       MOVWF  TMR2             ; TMR2=0x60
+038D 3064       MOVLW  0x64             
+038E 00FB       MOVWF  PR2              ; PR2=0x64
+0390 30FF       MOVLW  0xFF             
+0391 00FE       MOVWF  CPSCON0          ; CPSCON0=0xFF (T0XCS|CPSOUT|CPSRNG0|CPSRNG1|CPSRM|CPSON)
+0392 30AF       MOVLW  0xAF             
+0393 00FD       MOVWF  0x7D             ; 0x7D=0xAF
+0397 30D8       MOVLW  0xD8             
+0398 008B       MOVWF  INTCON           ; INTCON=0xD8 (IOCIE|INTE|PEIE|GIE)
+0425 3004       MOVLW  4                
+0426 00D6       MOVWF  TMR1L            ; TMR1L=4
+0433 300A       MOVLW  0x0A             
+0434 00D0       MOVWF  PORTE            ; PORTE=0x0A (RE3)
+0438 3005       MOVLW  5                
+0439 00D1       MOVWF  PIR1             ; PIR1=5 (TMR1IF|CCP1IF)
+043D 300A       MOVLW  0x0A             
+043E 00D2       MOVWF  PIR2             ; PIR2=0x0A (BCLIF)
+0442 300A       MOVLW  0x0A             
+0443 00D3       MOVWF  PIR3             ; PIR3=0x0A (TMR4IF|TMR6IF)
+0447 300A       MOVLW  0x0A             
+0448 00D4       MOVWF  0x54             ; 0x54=0x0A
+045A 087B L45A  MOVF   PR2,w            
+045B 00D8       MOVWF  T1CON            ; T1CON=PR2 (TMR1ON|T1OSCEN|T1CKPS0|T1CKPS1|TMR1CS0)
+047C 087B       MOVF   PR2,w            
+047D 00D8       MOVWF  T1CON            ; T1CON=PR2 (TMR1ON|T1OSCEN|T1CKPS0|T1CKPS1|TMR1CS0)
+0489 3004 L489  MOVLW  4                
+048A 008A       MOVWF  PCLATH           ; PCLATH=4
+0491 300D       MOVLW  0x0D             
+0492 009D       MOVWF  ADCON0           ; ADCON0=0x0D (ADON|CHS0|CHS1)
+04A4 086D       MOVF   PORTB,w          
+04A5 00EC       MOVWF  PORTA            ; PORTA=PORTB (RA0|RA2|RA3|RA5|RA6)
+050A 0821       MOVF   INDF1,w          
+050B 00E5       MOVWF  FSR0H            ; FSR0H=INDF1
+050E 0822       MOVF   PCL,w            
+050F 0084       MOVWF  FSR0L            ; FSR0L=PCL
+0510 0823       MOVF   STATUS,w         
+0511 0085       MOVWF  FSR0H            ; FSR0H=STATUS
+051C 3002 L51C  MOVLW  2                
+051D 0087       MOVWF  FSR1H            ; FSR1H=2
+051E 30A0       MOVLW  0xA0             
+051F 0086       MOVWF  FSR1L            ; FSR1L=0xA0
+053A 30A0       MOVLW  0xA0             
+053B 00E4       MOVWF  FSR0L            ; FSR0L=0xA0
+054F 3024 L54F  MOVLW  0x24             
+0550 0086       MOVWF  FSR1L            ; FSR1L=0x24
+055B 3002       MOVLW  2                
+055C 0087       MOVWF  FSR1H            ; FSR1H=2
+055D 30A0       MOVLW  0xA0             
+055E 0086       MOVWF  FSR1L            ; FSR1L=0xA0
+0572 30A0 L572  MOVLW  0xA0             
+0573 0084       MOVWF  FSR0L            ; FSR0L=0xA0
+0574 3002       MOVLW  2                
+0575 0085       MOVWF  FSR0H            ; FSR0H=2
+057D 3004       MOVLW  4                
+057E 0080       MOVWF  INDF0            ; INDF0=4
+057F 3005       MOVLW  5                
+0580 00E5       MOVWF  FSR0H            ; FSR0H=5
+0581 30A0       MOVLW  0xA0             
+0582 00E4       MOVWF  FSR0L            ; FSR0L=0xA0
+059A 3002       MOVLW  2                
+059B 0087       MOVWF  FSR1H            ; FSR1H=2
+059C 30A0       MOVLW  0xA0             
+059D 0086       MOVWF  FSR1L            ; FSR1L=0xA0
+05A1 3002       MOVLW  2                
+05A2 00E6       MOVWF  FSR1L            ; FSR1L=2
+0607 0864       MOVF   FSR0L,w          
+0608 0086       MOVWF  FSR1L            ; FSR1L=FSR0L
+0609 3002       MOVLW  2                
+060A 0087       MOVWF  FSR1H            ; FSR1H=2
+0706 3020       MOVLW  0x20             
+0707 00E3       MOVWF  STATUS           ; STATUS=0x20
+070B 0863       MOVF   STATUS,w         
+070C 0084       MOVWF  FSR0L            ; FSR0L=STATUS
+070E 0861       MOVF   INDF1,w          
+070F 0080       MOVWF  INDF0            ; INDF0=INDF1
+8008 1332       BCF    PIR2,C2IF        ; PIR2(C2IF) = 0
